@@ -2,18 +2,18 @@ import { Chessboard } from 'react-chessboard';
 import { Chess, Square } from 'chess.js';
 
 // Import your custom piece images
-import wP from '/images/pieces/wP.svg';
-import bP from '/images/pieces/bP.svg';
-import wN from '/images/pieces/wN.svg';
-import bN from '/images/pieces/bN.svg';
-import wB from '/images/pieces/wB.svg';
+import wP from '/images/Pieces/wP.svg';
+import bP from '/images/Pieces/bP.svg';
+import wN from '/images/Pieces/wN.svg';
+import bN from '/images/Pieces/bN.svg';
+import wB from '/images/Pieces/wB.svg';
 import bB from '/images/Pieces/bB.svg';
-import wR from '/images/pieces/wR.svg';
-import bR from '/images/pieces/bR.svg';
-import wQ from '/images/pieces/wQ.svg';
-import bQ from '/images/pieces/bQ.svg';
-import wK from '/images/pieces/wK.svg';
-import bK from '/images/pieces/bK.svg';
+import wR from '/images/Pieces/wR.svg';
+import bR from '/images/Pieces/bR.svg';
+import wQ from '/images/Pieces/wQ.svg';
+import bQ from '/images/Pieces/bQ.svg';
+import wK from '/images/Pieces/wK.svg';
+import bK from '/images/Pieces/bK.svg';
 
 interface ChessboardDisplayProps {
   fen: string;

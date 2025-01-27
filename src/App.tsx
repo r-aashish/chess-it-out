@@ -49,9 +49,6 @@ const App = () => {
     <BrowserRouter>
       <ThemeProvider>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-        <div className="fixed top-4 right-4 z-50">
-        </div>
-
           <Routes>
             <Route
               path="/"
@@ -102,7 +99,7 @@ const App = () => {
 
                       {!profile && !error && !isLoading && (
                         <div className="text-center mt-16 space-y-2 animate-fadeIn">
-                          <p className="text-gray-500 text-sm mb-4">Popular Players:</p>
+                          <p className="text-gray-500 text-sm mb-4">Some popular players:</p>
                           <div className="flex justify-center gap-3">
                             {['MagnusCarlsen', 'GukeshDommaraju','TheVish'].map((name) => (
                               <button
@@ -114,6 +111,22 @@ const App = () => {
                               </button>
                             ))}
                           </div>
+                          <br></br>
+                          <p className="text-gray-500 text-sm mt-12 mb-4 text-center">Connect with me:</p>
+                          <div id="initial-links" className="flex justify-center space-x-4 mt-4">
+                            <a href="https://www.linkedin.com/in/aashishreddy" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-200">
+                              <img src="/images/linkedin.png" alt="LinkedIn" className="h-6 w-6 rounded-full" />
+                            </a>
+                            <a href="mailto:aashishreddy53@gmail.com" className="hover:opacity-75 transition-opacity duration-200">
+                              <img src="/images/email.png" alt="Email" className="h-6 w-6 rounded-full" />
+                            </a>
+                            <a href="https://github.com/r-aashish" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-200">
+                              <img src="/images/github.png" alt="GitHub" className="h-6 w-6 rounded-full" />
+                            </a>
+                            <a href="https://aashish-resume.tiiny.site" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-200">
+                              <img src="/images/resume.png" alt="Resume" className="h-6 w-6 rounded-full" />
+                            </a>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -122,6 +135,31 @@ const App = () => {
               }
             />
           </Routes>
+          <div id="sidebar" className="fixed top-0 left-0 h-full w-16 py-4 z-50 flex flex-col items-center hidden">
+          <a href="https://www.linkedin.com/in/aashishreddy" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-200 mb-4">
+            <img src="/images/linkedin.png" alt="LinkedIn" className="h-6 w-6 rounded-full" />
+          </a>
+          <a href="mailto:aashishreddy53@gmail.com" className="hover:opacity-75 transition-opacity duration-200 mb-4">
+            <img src="/images/email.png" alt="Email" className="h-6 w-6 rounded-full" />
+          </a>
+          <a href="https://github.com/r-aashish" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-200 mb-4">
+            <img src="/images/github.png" alt="GitHub" className="h-6 w-6 rounded-full" />
+          </a>
+          <a href="https://aashish-resume.tiiny.site" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-200">
+            <img src="/images/resume.png" alt="Resume" className="h-6 w-6 rounded-full" />
+          </a>
+        </div>
+          <script>{`
+            const initialLinks = document.getElementById('initial-links');
+            const sidebar = document.getElementById('sidebar');
+            const links = initialLinks.querySelectorAll('a');
+            links.forEach(link => {
+              link.addEventListener('click', () => {
+                sidebar.classList.remove('hidden');
+                initialLinks.classList.add('hidden');
+              });
+            });
+          `}</script>
 
           <style>{`
             @keyframes slideUp {
