@@ -66,8 +66,8 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) =
   const highestRating = stats?.chess_rapid?.best?.rating || 0;
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 max-w-4xl mx-auto">
-      <div className="flex items-start space-x-6 mb-6">
+    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 max-w-4xl mx-auto w-full">
+      <div className="flex items-start space-x-6 mb-6 flex-col sm:flex-row">
         <div className="relative">
           {username && (
             <div className="w-24 h-24 flex flex-col items-center">
@@ -95,12 +95,6 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) =
                   e.currentTarget.src = '/default-avatar.svg';
                 }}
               />
-              <div className="absolute -bottom-2 -right-2 bg-white dark:bg-gray-800 p-1.5 rounded-full shadow-md">
-                <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div className="absolute bottom-0 w-full text-center text-xs text-gray-500 dark:text-gray-400">
-                {profile.username}
-              </div>
             </div>
           )}
         </div>
@@ -136,7 +130,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) =
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex items-center space-x-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
               <div className="p-1 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
                 <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -196,14 +190,6 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) =
         </div>
       </div>
 
-      {profile.status && (
-        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center space-x-2 text-sm text-blue-600 dark:text-blue-400">
-            <SparklesIcon className="w-4 h-4" />
-            <span className="font-medium">{profile.status}</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
