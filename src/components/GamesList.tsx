@@ -9,6 +9,7 @@ interface GamesListProps {
   games: ChessGame[];
   username: string;
   onGameSelect: (game: ChessGame) => void;
+  isLoading: boolean;
 }
 
 export const GamesList: React.FC<GamesListProps> = ({ games, username, onGameSelect }) => {
@@ -111,7 +112,7 @@ export const GamesList: React.FC<GamesListProps> = ({ games, username, onGameSel
           return (
             <div
               key={index}
-              onClick={() => onGameSelect({...game, result: playerData.result, opening: game.opening || 'Unknown' })}
+              onClick={() => onGameSelect(structuredClone(game))}
               className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg hover:scale-105 transition-transform duration-200 cursor-pointer"
             >
               {/* Date */}
