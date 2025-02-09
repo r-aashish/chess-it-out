@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { Search, Loader } from "./icons";
 
+/**
+ * SearchFormProps interface defines the props for the SearchForm component.
+ * It includes properties for the search function and a boolean indicating whether the search is loading.
+ */
 interface SearchFormProps {
   onSearch: (username: string) => void;
   isLoading: boolean;
 }
 
+/**
+ * SearchForm component displays a form for searching Chess.com usernames.
+ */
 export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) => {
   const [username, setUsername] = useState("");
 

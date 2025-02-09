@@ -7,6 +7,7 @@
     <title>Chess.com Profile Analysis</title>
     <meta name="description" content="Analyze your Chess.com profile and games with advanced insights and engine analysis" />
     <meta name="theme-color" content="#262421" />
+    <!-- Script to set the theme based on local storage or system preference -->
     <script>
       // On page load or when changing themes, best to add inline in `head` to avoid FOUC
       if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {

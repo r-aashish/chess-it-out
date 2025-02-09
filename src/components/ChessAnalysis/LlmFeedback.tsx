@@ -10,6 +10,12 @@ interface PgnMove {
   };
 }
 
+/**
+ * LlmFeedbackProps interface defines the props for the LlmFeedback component.
+ * It includes properties for the chess game details, the current move number,
+ * a function to set the feedback, the username of the current user,
+ * and the piece color of the current user.
+ */
 interface LlmFeedbackProps {
   game: ChessGame;
   currentMove: number;
@@ -22,6 +28,11 @@ const isParseTree = (parsed: any): parsed is ParseTree => {
   return parsed && Array.isArray(parsed.moves);
 };
 
+/**
+ * LlmFeedback component fetches and displays feedback from a language model
+ * for the current chess game. It uses the Gemini API to analyze the game
+ * and provide insights for each move.
+ */
 const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, setFeedback, username, pieceColor }) => {
   const [localFeedback, setLocalFeedback] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);

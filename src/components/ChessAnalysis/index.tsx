@@ -12,12 +12,21 @@ import { X, ChevronLeft, Info } from '../icons';
 import LlmFeedback from './LlmFeedback';
 import EngineAnalysis from './EngineAnalysis';
 
+/**
+ * ChessAnalysisProps interface defines the props for the ChessAnalysis component.
+ * It includes properties for the chess game details, a function to close the analysis,
+ * and the username of the current user.
+ */
 interface ChessAnalysisProps {
   game: ChessGame;
   onClose: () => void;
   username?: string;
 }
 
+/**
+ * ChessAnalysis component is the main component for analyzing a chess game.
+ * It displays the chessboard, move list, engine analysis, and game information.
+ */
 export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, username }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [chess] = useState(new Chess());

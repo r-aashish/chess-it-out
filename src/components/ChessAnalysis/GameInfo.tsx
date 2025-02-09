@@ -3,13 +3,21 @@ import { ChessGame } from '../../types/chess';
 import { X, Clock, Trophy, Calendar } from '../icons';
 import { format } from 'date-fns';
 
+/**
+ * GameInfoProps interface defines the props for the GameInfo component.
+ * It includes properties for the chess game details, a function to close the game info panel,
+ * and the move history of the game.
+ */
 interface GameInfoProps {
   game: ChessGame;
   onClose: () => void;
   moveHistory: string[];
 }
 
-// Reusable component for game detail rows
+/**
+ * GameDetailRow component is a reusable component for displaying game detail rows.
+ * It takes an icon, label, and value as props and renders them in a consistent format.
+ */
 const GameDetailRow: React.FC<{
   icon: React.ReactNode;
   label: string;
@@ -24,6 +32,11 @@ const GameDetailRow: React.FC<{
   </div>
 );
 
+/**
+ * GameInfo component displays detailed information about a chess game.
+ * It includes the game's time control, game type, played date, player usernames,
+ * result, opening, and number of moves.
+ */
 export const GameInfo: React.FC<GameInfoProps> = ({ game, onClose, moveHistory }) => {
   // Format the game end time safely
   const playedOn = game.end_time

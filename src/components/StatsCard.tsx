@@ -3,16 +3,29 @@ import { ChessStats } from "../types/chess";
 import { Target, TrendingUp, Scale } from "./icons";
 import { ProgressBar } from "./ProgressBar";
 
+/**
+ * StatsCardProps interface defines the props for the StatsCard component.
+ * It includes an optional property for the chess stats.
+ */
 interface StatsCardProps {
   stats?: ChessStats;
 }
 
-const StatLabel: React.FC<{ 
+/**
+ * StatLabelProps interface defines the props for the StatLabel component.
+ * It includes properties for the icon, label, value, and trend.
+ */
+interface StatLabelProps {
   icon: JSX.Element;
   label: string;
   value: number;
   trend?: number;
-}> = ({ icon, label, value, trend }) => (
+}
+
+/**
+ * StatLabel component displays a single statistic with an icon, label, value, and trend.
+ */
+const StatLabel: React.FC<StatLabelProps> = ({ icon, label, value, trend }) => (
   <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50/50 to-white/20 dark:from-gray-800/50 dark:to-gray-900/20 rounded-lg backdrop-blur-sm">
     <div className="flex items-center space-x-3">
       <div className="p-2 bg-white dark:bg-gray-900 rounded-lg shadow-sm">
@@ -33,6 +46,9 @@ const StatLabel: React.FC<{
   </div>
 );
 
+/**
+ * StatsCard component displays a card with the player's chess stats, including rapid, blitz, and bullet ratings.
+ */
 export const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
   const gameTypes: (keyof ChessStats)[] = ["chess_rapid", "chess_blitz", "chess_bullet"];
 
@@ -89,14 +105,14 @@ export const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
 
                 <div className="space-y-2">
                   <StatLabel
-                    icon={<Target className="text-blue-500" />}
+                    icon=<Target className="text-blue-500" />
                     label="Current Rating"
                     value={data.stats.current}
                     trend={data.stats.trend}
                   />
 
                   <StatLabel
-                    icon={<TrendingUp className="text-green-500" />}
+                    icon=<TrendingUp className="text-green-500" />
                     label="Peak Rating"
                     value={data.stats.best}
                   />

@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Sun, Moon } from './icons';
 
+/**
+ * ThemeContextProps interface defines the props for the ThemeContext.
+ * It includes properties for the isDark state and the toggleTheme function.
+ */
 interface ThemeContextProps {
   isDark: boolean;
   toggleTheme: () => void;
@@ -8,6 +12,10 @@ interface ThemeContextProps {
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
+/**
+ * ThemeProvider component provides the theme context to its children.
+ * It manages the isDark state and the toggleTheme function.
+ */
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
@@ -71,6 +79,9 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   );
 };
 
+/**
+ * useTheme hook is a custom hook that provides access to the theme context.
+ */
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {

@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Stockfish } from '../workers/stockfish';
 
+/**
+ * useEngine hook manages the Stockfish engine and provides analysis data.
+ */
 export const useEngine = () => {
   const [engine] = useState(() => new Stockfish());
   const [evaluation, setEvaluation] = useState<string>('0.0');

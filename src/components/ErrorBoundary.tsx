@@ -8,6 +8,11 @@ interface State {
   hasError: boolean;
 }
 
+/**
+ * ErrorBoundary component is a class component that catches JavaScript errors anywhere in their child component tree,
+ * log those errors, and display a fallback UI. Error boundaries catch errors during rendering, in lifecycle methods,
+ * and in constructors of the whole tree below them.
+ */
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);

@@ -2,21 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Set color scheme to light and dark */
 :root {
   color-scheme: light dark;
 }
 
+/* Keyframes for gradient animation */
 @keyframes gradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
+/* Apply gradient animation to elements with this class */
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient 3s ease infinite;
 }
 
+/* Body styles */
 body {
   margin: 0;
   min-width: 320px;
@@ -31,12 +35,14 @@ body {
   position: relative;
 }
 
+/* Keyframes for pulsing valid moves */
 @keyframes pulse-valid-move {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
+/* Keyframes for pulsing checkmate */
 @keyframes pulse-checkmate {
   0% { background-color: rgba(255, 0, 0, 0.3); }
   50% { background-color: rgba(255, 0, 0, 0.6); }
