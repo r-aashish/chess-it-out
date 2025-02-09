@@ -5,12 +5,21 @@ import { useGamePosition } from '../../hooks/useGamePosition';
 import { EngineEvaluation } from './EngineEvaluation';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
+/**
+ * ChessBoardProps interface defines the props for the ChessBoard component.
+ * It includes properties for the chess game details, a function to close the analysis,
+ * and the username of the current user.
+ */
 interface ChessBoardProps {
   game: ChessGame;
   onClose: () => void;
   username: string;
 }
 
+/**
+ * ChessBoard component displays a chessboard with the game's moves and engine evaluation.
+ * It allows the user to navigate through the moves and see the engine's analysis.
+ */
 export const ChessBoard: React.FC<ChessBoardProps> = ({ game, onClose, username }) => {
   const { position, currentMove, goToMove, goToNext, goToPrev } = useGamePosition(game.pgn);
   const playerColor = game.white.username.toLowerCase() === username.toLowerCase() ? "white" : "black";

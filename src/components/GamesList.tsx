@@ -5,6 +5,11 @@ import whiteBishop from "/images/white-bishop.png"; // Import white bishop icon
 import blackBishop from "/images/black-bishop.png"; // Import black bishop icon
 import { formatDate } from "../utils/date";
 
+/**
+ * GamesListProps interface defines the props for the GamesList component.
+ * It includes properties for the list of chess games, the username of the current user,
+ * a function to handle game selection, and a boolean indicating whether the data is loading.
+ */
 interface GamesListProps {
   games: ChessGame[];
   username: string;
@@ -12,9 +17,17 @@ interface GamesListProps {
   isLoading: boolean;
 }
 
+/**
+ * GamesList component displays a list of recent chess games for a given user.
+ * It allows the user to filter the games by result (win, loss, draw) and select a game to view.
+ */
 export const GamesList: React.FC<GamesListProps> = ({ games, username, onGameSelect }) => {
   const [filterResult, setFilterResult] = useState<string>("");
 
+  /**
+   * getResultColor function returns a CSS class name based on the game result.
+   * The class name is used to color the result text.
+   */
   const getResultColor = (result: string): string => {
     const colorMap: { [key: string]: string } = {
       win: "text-green-600 dark:text-green-400",

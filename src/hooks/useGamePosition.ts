@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Chess } from 'chess.js';
 
+/**
+ * useGamePosition hook manages the game position and navigation.
+ * @param pgn - The PGN string of the chess game.
+ * @returns An object containing the current position, current move, and functions to navigate the game.
+ */
 export const useGamePosition = (pgn: string) => {
   const [game] = useState(new Chess());
   const [position, setPosition] = useState(game.fen());

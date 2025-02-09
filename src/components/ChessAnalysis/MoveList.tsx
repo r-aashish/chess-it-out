@@ -3,6 +3,12 @@ import React from 'react';
 import { ChessGame, Move } from '../../types/chess';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Flip } from '../icons';
 
+/**
+ * MoveListProps interface defines the props for the MoveList component.
+ * It includes properties for the list of moves, the current move number,
+ * a function to handle going to a specific move, the board orientation,
+ * a function to set the board orientation, and the move history length.
+ */
 interface MoveListProps {
   moves: Move[];
   currentMove: number;
@@ -12,6 +18,10 @@ interface MoveListProps {
   moveHistoryLength: number;
 }
 
+/**
+ * MoveList component displays the list of moves in the chess game.
+ * It allows the user to navigate through the moves and change the board orientation.
+ */
 export const MoveList: React.FC<MoveListProps> = ({
   moves,
   currentMove,

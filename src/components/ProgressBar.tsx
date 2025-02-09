@@ -1,11 +1,18 @@
 import React from "react";
 
+/**
+ * ProgressBarProps interface defines the props for the ProgressBar component.
+ * It includes properties for the number of wins, losses, and draws.
+ */
 interface ProgressBarProps {
   wins: number;
   losses: number;
   draws: number;
 }
 
+/**
+ * ProgressBar component displays a progress bar visualizing the win, loss, and draw percentages.
+ */
 export const ProgressBar: React.FC<ProgressBarProps> = ({ wins, losses, draws }) => {
   const total = wins + losses + draws;
   const winPercent = (wins / total) * 100 || 0;

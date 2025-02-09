@@ -1,5 +1,10 @@
 import React from 'react';
 
+/**
+ * EvaluationBarProps interface defines the props for the EvaluationBar component.
+ * It includes properties for the engine's evaluation, board width,
+ * whether to show the evaluation label, mate-in number, and whether it's an endgame.
+ */
 interface EvaluationBarProps {
   evaluation: number | null;
   boardWidth: number;
@@ -8,6 +13,11 @@ interface EvaluationBarProps {
   isEndgame?: boolean;
 }
 
+/**
+ * EvaluationBar component displays a visual representation of the engine's evaluation.
+ * It uses a gradient bar to indicate the evaluation score, with white representing
+ * a positive evaluation for white and black representing a positive evaluation for black.
+ */
 export const EvaluationBar: React.FC<EvaluationBarProps> = ({
   evaluation,
   boardWidth,

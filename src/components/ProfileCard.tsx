@@ -15,11 +15,19 @@ import {
 import { formatDate, calculateWinLossRatio } from "../utils/date";
 import { getPlayerStats } from "../services/chessApi";
 
+/**
+ * ProfileCardProps interface defines the props for the ProfileCard component.
+ * It includes properties for the player profile and an optional username.
+ */
 interface ProfileCardProps {
   profile: PlayerProfile;
   username?: string; // Optional username prop
 }
 
+/**
+ * ProfileCard component displays a player's profile information, including their avatar,
+ * username, name, location, followers, highest rating, join date, and win/loss ratio.
+ */
 export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) => {
   const [stats, setStats] = useState<ChessStats | null>(null);
   const [loading, setLoading] = useState(true);

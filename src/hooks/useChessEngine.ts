@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Square } from 'chess.js';
 
+/**
+ * EngineAnalysis interface defines the structure for chess engine analysis data.
+ * It includes the evaluation score, best move, principal variation, and best move arrow.
+ */
 interface EngineAnalysis {
   evaluation: number;      // Current position evaluation in pawns
   bestMove: string;        // Best move found by the engine

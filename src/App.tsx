@@ -13,7 +13,12 @@ import { ThemeProvider, useTheme } from "./components/ThemeToggle";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { PlayerProfile, ChessStats, ChessGame } from "./types/chess";
 
+/**
+ * App component is the main component of the application.
+ * It handles the overall layout, routing, and data fetching.
+ */
 const App = () => {
+  // State variables
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [stats, setStats] = useState<ChessStats | null>(null);
   const [games, setGames] = useState<ChessGame[]>([]);
@@ -22,6 +27,11 @@ const App = () => {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * handleSearch function handles the search for a Chess.com username.
+   * It fetches the player profile, stats, and games, and updates the state accordingly.
+   * @param username - The username to search for.
+   */
   const handleSearch = async (username: string) => {
     setIsLoading(true);
     setError("");
@@ -101,7 +111,7 @@ const App = () => {
                                 <img
                                   src={isDark ? LogoDarkMode : LogoLightMode}
                                   alt="ChessItOut Logo"
-                                  className="h-40 w-72 animate-float"
+                                  className="h-40 w-72"
                                 />
                             );
                           })()}
@@ -232,6 +242,7 @@ const App = () => {
           </div>
 
           <style>{`
+            /* Keyframes for animations */
             @keyframes typewriter {
               from { width: 0 }
               to { width: 100% }
@@ -265,6 +276,7 @@ const App = () => {
               from { opacity: 0; }
               to { opacity: 1; }
             }
+            /* Animation classes */
             .animate-slideUp { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
             .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
             .animate-float { animation: float 6s ease-in-out infinite; }

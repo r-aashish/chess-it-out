@@ -2,6 +2,11 @@ import { useState, useCallback, useEffect } from 'react';
 import { Chess, Square } from 'chess.js';
 import { Move } from '../types/chess';
 
+/**
+ * UseChessboardProps interface defines the props for the useChessboard hook.
+ * It includes properties for the initial FEN, PGN, a function to handle move changes,
+ * and an optional function to handle current move changes.
+ */
 interface UseChessboardProps {
   initialFen?: string;
   pgn?: string;
@@ -9,6 +14,12 @@ interface UseChessboardProps {
   onCurrentMoveChange?: (currentMove: number) => void;
 }
 
+/**
+ * UseChessboardReturn interface defines the return type for the useChessboard hook.
+ * It includes properties for the chess game, FEN, valid moves, last move, last clicked piece,
+ * board orientation, functions to handle square clicks and going to a specific move,
+ * the current move number, move history length, and the move history.
+ */
 interface UseChessboardReturn {
   chess: Chess;
   fen: string;
@@ -25,6 +36,10 @@ interface UseChessboardReturn {
   moveHistory: string[];
 }
 
+/**
+ * useChessboard hook manages the state and logic for a chessboard component.
+ * It handles loading PGN, move validation, square clicks, and move history.
+ */
 export const useChessboard = ({ initialFen, pgn, onMovesChange, onCurrentMoveChange }: UseChessboardProps): UseChessboardReturn => {
   const [chess] = useState(() => {
     return new Chess();

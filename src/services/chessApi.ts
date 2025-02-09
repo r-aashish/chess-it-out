@@ -3,6 +3,10 @@ import { PlayerProfile, ChessStats, ChessGame } from '../types/chess';
 
 const BASE_URL = 'https://api.chess.com/pub';
 
+/**
+ * handleApiError function handles API errors and throws a user-friendly error message.
+ * @param error - The error object.
+ */
 const handleApiError = (error: unknown) => {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError;
@@ -16,6 +20,11 @@ const handleApiError = (error: unknown) => {
   throw new Error('An unexpected error occurred. Please try again.');
 };
 
+/**
+ * getPlayerProfile function retrieves a player's profile from the Chess.com API.
+ * @param username - The username of the player.
+ * @returns A promise that resolves to the player's profile.
+ */
 export const getPlayerProfile = async (username: string): Promise<PlayerProfile> => {
   try {
     const response = await axios.get(`${BASE_URL}/player/${username}`);
@@ -29,6 +38,11 @@ export const getPlayerProfile = async (username: string): Promise<PlayerProfile>
   }
 };
 
+/**
+ * getPlayerStats function retrieves a player's stats from the Chess.com API.
+ * @param username - The username of the player.
+ * @returns A promise that resolves to the player's stats.
+ */
 export const getPlayerStats = async (username: string): Promise<ChessStats> => {
   try {
     const response = await axios.get(`${BASE_URL}/player/${username}/stats`);
@@ -38,6 +52,11 @@ export const getPlayerStats = async (username: string): Promise<ChessStats> => {
   }
 };
 
+/**
+ * getPlayerGames function retrieves a player's recent games from the Chess.com API.
+ * @param username - The username of the player.
+ * @returns A promise that resolves to an array of the player's recent games.
+ */
 export const getPlayerGames = async (username: string): Promise<ChessGame[]> => {
   try {
     const response = await axios.get(`${BASE_URL}/player/${username}/games/archives`);

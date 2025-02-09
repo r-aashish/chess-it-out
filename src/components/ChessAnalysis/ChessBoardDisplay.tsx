@@ -15,6 +15,12 @@ import bQ from '/images/Pieces/bQ.svg';
 import wK from '/images/Pieces/wK.svg';
 import bK from '/images/Pieces/bK.svg';
 
+/**
+ * ChessboardDisplayProps interface defines the props for the ChessBoardDisplay component.
+ * It includes properties for the game's FEN notation, board width, click handling,
+ * board orientation, last move indication, valid moves highlighting, best move arrow display,
+ * capture arrows, checkmate status, the chess.js Chess instance, and the last clicked piece.
+ */
 interface ChessboardDisplayProps {
   fen: string;
   width: number;
@@ -29,12 +35,20 @@ interface ChessboardDisplayProps {
   lastClickedPiece: Square | null;
 }
 
+/**
+ * Defines the theme for the chessboard.
+ * Includes background colors for dark and light squares.
+ */
 const boardTheme = {
   dark: { backgroundColor: '#7a9e5a' },
   light: { backgroundColor: '#ebecd3' },
 };
 
-// Define custom pieces
+/**
+ * Defines custom piece images for the chessboard.
+ * Returns an object where each key is a piece type (e.g., 'wP' for white pawn)
+ * and the value is a React component that renders the corresponding image.
+ */
 const customPieces = () => {
   return {
     wP: ({ squareWidth }: { squareWidth: number }) => (
@@ -76,6 +90,11 @@ const customPieces = () => {
   };
 };
 
+/**
+ * ChessBoardDisplay component renders a chessboard with specified properties.
+ * It uses the react-chessboard library to display the board and customizes
+ * the appearance based on the provided props.
+ */
 export const ChessBoardDisplay: React.FC<ChessboardDisplayProps> = ({
   fen,
   width,
