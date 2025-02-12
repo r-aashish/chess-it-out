@@ -51,7 +51,13 @@ export const useChessboard = ({ initialFen, pgn, onMovesChange, onCurrentMoveCha
   const [validMoves, setValidMoves] = useState<Square[]>([]);
   const [lastMove, setLastMove] = useState<{ from: Square; to: Square } | null>(null);
   const [lastClickedPiece, setLastClickedPiece] = useState<Square | null>(null);
-  const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>('white');
+  const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>(() => {
+    if (initialFen) {
+      const fenParts = initialFen.split(' ');
+      return fenParts[1] === 'b' ? 'white' : 'black';
+    }
+    return 'white';
+  });
 
   useEffect(() => {
     if (pgn) {

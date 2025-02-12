@@ -103,11 +103,11 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
 
       <div className="flex-1 flex p-6 gap-6 overflow-hidden justify-center items-center">
         <div className={`flex flex-col mr-6 ${boardOrientation === 'white' ? 'items-start' : 'items-end'}`}>
-          <div className={`flex items-center ${boardOrientation === 'white' ? 'justify-start' : 'justify-end'} mb-2`}>
-            <img src={boardOrientation === 'white' ? (game?.white?.avatar || "/images/white-cat.jpeg") : (game?.black?.avatar || "/images/black-cat.webp")} alt="white avatar" className="w-12 h-12 rounded-full mr-2" />
+          <div className={`flex items-center ${boardOrientation === 'black' ? 'justify-start' : 'justify-end'} mb-2`}>
+            <img src={boardOrientation === 'black' ? (game?.white?.avatar || "/images/white-cat.jpeg") : (game?.black?.avatar || "/images/black-cat.webp")} alt="opponent avatar" className="w-12 h-12 rounded-full mr-2" />
             <div className="text-white text-center">
-              <p className="text-sm">{boardOrientation === 'white' ? game?.white?.username : game?.black?.username}</p>
-              <p className="text-xs text-[#AAAAAA]">({boardOrientation === 'white' ? game?.white?.rating : game?.black?.rating})</p>
+              <p className="text-sm">{boardOrientation === 'black' ? game?.white?.username : game?.black?.username}</p>
+              <p className="text-xs text-[#AAAAAA]">({boardOrientation === 'black' ? game?.white?.rating : game?.black?.rating})</p>
             </div>
           </div>
           <div className="flex gap-4">
@@ -128,11 +128,11 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
               />
             </div>
           </div>
-          <div className={`flex items-center ${boardOrientation === 'white' ? 'justify-start' : 'justify-end'} mt-2`}>
-            <img src={boardOrientation === 'white' ? (game?.black?.avatar || "/images/black-cat.webp") : (game?.white?.avatar || "/images/white-cat.jpeg")} alt="black avatar" className="w-12 h-12 rounded-full mr-2" />
+          <div className={`flex items-center ${boardOrientation === 'black' ? 'justify-start' : 'justify-end'} mt-2`}>
+            <img src={boardOrientation === 'black' ? (game?.black?.avatar || "/images/black-cat.webp") : (game?.white?.avatar || "/images/white-cat.jpeg")} alt="user avatar" className="w-12 h-12 rounded-full mr-2" />
              <div className="text-white text-center">
-              <p className="text-sm">{boardOrientation === 'white' ? game?.black?.username : game?.white?.username}</p>
-              <p className="text-xs text-[#AAAAAA]">({boardOrientation === 'white' ? game?.black?.rating : game?.white?.rating})</p>
+              <p className="text-sm">{boardOrientation === 'black' ? game?.black?.username : game?.white?.username}</p>
+              <p className="text-xs text-[#AAAAAA]">({boardOrientation === 'black' ? game?.black?.rating : game?.white?.rating})</p>
             </div>
           </div>
         </div>
