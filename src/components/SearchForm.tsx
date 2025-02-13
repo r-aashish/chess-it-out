@@ -15,10 +15,43 @@ interface SearchFormProps {
  */
 export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) => {
   const [username, setUsername] = useState("");
+  const [suggestedUsername, setSuggestedUsername] = useState("");
+  const [isError, setIsError] = useState(false);
+
+  // Common username corrections
+  const COMMON_TYPOS: Record<string, string> = {
+    'magnuse': 'magnus',
+    'hikaru': 'gmhikaru',
+    'bobyfischer': 'bobbyfischer'
+  };
+
+  const normalizeUsername = (name: string) => {
+    let normalized = name.trim().toLowerCase();
+    
+    // Replace common typos
+    Object.entries(COMMON_TYPOS).forEach(([typo, correction]) => {
+      normalized = normalized.replace(typo, correction);
+    });
+
+    return normalized;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim()) onSearch(username.trim());
+    const processedUsername = normalizeUsername(username);
+    
+    // Check for Magnus Carlsen typo specifically
+    if (processedUsername.includes('magnus') && processedUsername.includes('carlsen')) {
+      const corrected = 'magnuscarlsen'; // Chess.com username format
+      setSuggestedUsername(corrected);
+      setIsError(true);
+      onSearch(corrected);
+      return;
+    }
+
+    setIsError(false);
+    setSuggestedUsername('');
+    onSearch(processedUsername);
   };
 
   return (
@@ -53,6 +86,21 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
             )}
           </button>
         </div>
+        {isError && suggestedUsername && (
+          <div className="mt-2 text-sm text-red-500 dark:text-red-400">
+            Did you mean: 
+            <button
+              type="button"
+              onClick={() => {
+                setUsername(suggestedUsername);
+                setIsError(false);
+              }}
+              className="ml-1 text-blue-500 dark:text-blue-400 hover:underline"
+            >
+              {suggestedUsername}
+            </button>
+          </div>
+        )}
       </div>
     </form>
   );

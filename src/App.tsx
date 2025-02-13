@@ -141,9 +141,9 @@ const App = () => {
 
                       {!profile && !error && !isLoading && (
                         <div className="text-center mt-16 space-y-2">
-                          <p className="text-gray-500 text-sm mb-4">Some popular players:</p>
+                          <p className="text-gray-500 text-sm mb-4"> Try these usernames </p>
                           <div className="flex justify-center gap-3">
-                            {['MagnusCarlsen', 'GukeshDommaraju','TheVish'].map((name) => (
+                            {['Hikaru', 'GukeshDommaraju','TheVish'].map((name) => (
                               <a
                                 key={name}
                                 href={`https://www.chess.com/member/${name}`}
@@ -157,6 +157,11 @@ const App = () => {
                               </a>
                             ))}
                           </div>
+                          <br />
+                          <br />
+                          <br />
+                          <br />
+                          <br />
                           <br />
                           <br />
                           <br />

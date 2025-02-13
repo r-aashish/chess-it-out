@@ -51,7 +51,7 @@ const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, setFeedbac
       if (!isParseTree(parsedPgn)) throw new Error("Failed to parse PGN moves");
       
       const allMoves = parsedPgn.moves.map((move: PgnMove) => move.notation.notation);
-      const batchSize = 20;
+      const batchSize = 30;
       const totalBatches = Math.ceil(allMoves.length / batchSize);
       
       let combinedFeedback: string[] = [];
@@ -79,7 +79,7 @@ const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, setFeedbac
         Additional requirements:
         - MUST end each half-move analysis with %%%
         - MUST keep each analysis between 2-3 sentences
-        - MUST use ${playerName}'s name sometimes when analyzing their moves
+        - MUST use ${playerName}'s name and their ${playerColor} pieces in analysis
         - MUST mention specific squares (e4, f6, etc.) when relevant
         - MUST evaluate piece coordination and activity
         - MUST address potential threats or weaknesses
