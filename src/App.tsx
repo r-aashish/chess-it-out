@@ -56,7 +56,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-purple-50/30 to-pink-50/30 dark:from-gray-800 dark:via-gray-900 dark:to-gray-950 text-gray-900 dark:text-gray-100 transition-all duration-500 relative overflow-hidden">
+      <div className="min-h-screen text-gray-900 dark:text-gray-100 transition-all duration-500 relative overflow-hidden">
         {/* Chessboard pattern overlay with pointer-events disabled */}
         <div
           className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[size:40px_40px] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]"
