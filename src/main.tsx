@@ -2,12 +2,12 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import { ThemeProvider } from './components/ThemeToggle';
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root')!;
+rootElement.classList.add('dark');
+
+createRoot(rootElement).render(
   <StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
+    <App />
   </StrictMode>
 );
