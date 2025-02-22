@@ -31,7 +31,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ wins, losses, draws })
           className="absolute inset-y-0 left-0 h-full bg-gradient-to-r from-green-600 to-green-400 transition-all duration-1000 ease-out delay-150"
           title={`Wins: ${winPercent.toFixed(1)}%`}
         >
-          <div className="absolute inset-0 bg-[url('/texture.png')] opacity-10 mix-blend-overlay" />
+          
         </div>
 
         {/* Draw segment */}
@@ -40,7 +40,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ wins, losses, draws })
           className="absolute inset-y-0 h-full bg-gradient-to-r gray transition-all duration-1000 ease-out delay-300"
           title={`Draws: ${drawPercent.toFixed(1)}%`}
         >
-          <div className="absolute inset-0 bg-[url('/texture.png')] opacity-10 mix-blend-overlay" />
+          
         </div>
 
         {/* Loss segment */}
@@ -49,7 +49,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ wins, losses, draws })
           className="absolute inset-y-0 h-full bg-gradient-to-r from-red-600 to-red-400 transition-all duration-1000 ease-out delay-500"
           title={`Losses: ${lossPercent.toFixed(1)}%`}
         >
-          <div className="absolute inset-0 bg-[url('/texture.png')] opacity-10 mix-blend-overlay" />
+          
         </div>
       </div>
 
