@@ -60,7 +60,7 @@
           },
           move: {
             enable: true,
-            speed: 5,
+            speed: 2,
             direction: "right",
             straight: true,
             outModes: "out"
