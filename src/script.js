@@ -89,7 +89,7 @@
             x: -30
           },
           rate: {
-            delay: 5,
+            delay: 7,
             quantity: 1
           },
           size: {
@@ -141,7 +141,7 @@
               value: 70
             },
             move: {
-              speed: 8,
+              speed: 4,
               outModes: {
                 default: "destroy",
                 left: "none"
