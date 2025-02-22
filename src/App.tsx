@@ -1,4 +1,4 @@
-import LogoDarkMode from '../images/Logo.png';
+import Logo from '../images/Logo.png';
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getPlayerProfile, getPlayerStats, getPlayerGames } from "./services/chessApi";
@@ -44,6 +44,7 @@ const App = () => {
         getPlayerStats(username),
         getPlayerGames(username),
       ]);
+
       setProfile(profileData);
       setStats(statsData);
       setGames(gamesData);
@@ -57,7 +58,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="min-h-screen text-gray-900 dark:text-gray-100 transition-all duration-500 relative overflow-hidden">
-        {/* Keep existing chessboard pattern overlay */}
+        {/* Chessboard pattern overlay */}
         <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[size:40px_40px] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]" />
 
         <Routes>
@@ -78,7 +79,7 @@ const App = () => {
                       <div className="text-center space-y-6">
                         <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center justify-center hover:scale-105 transition-transform duration-300">
                           <img
-                            src={LogoDarkMode}
+                            src={Logo}
                             alt="Chess Suspect Logo"
                             className="h-24 w-auto"
                           />
@@ -108,34 +109,36 @@ const App = () => {
 
                       {!profile && !error && !isLoading && (
                         <div className="text-center mt-16 space-y-6">
-                        <div className="space-y-4">
-                          <p className="text-gray-200 text-lg font-medium drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
-                            Don't have an account? Try these players:
-                          </p>
-                          <div className="flex flex-wrap justify-center gap-4">
-                            {['Hikaru', 'GukeshDommaraju', 'TheVish'].map((name) => (
-                              <button
-                                key={name}
-                                onClick={() => handleSearch(name)}
-                                className="px-6 py-3 bg-gray-900/80 rounded-lg text-gray-200 hover:text-white
-                                  border border-gray-700 hover:border-gray-500
-                                  shadow-[0_0_15px_rgba(0,0,0,0.3)]
-                                  hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]
-                                  transition-all duration-300 hover:scale-105
-                                  backdrop-blur-sm"
-                              >
-                                {name}
-                              </button>
-                            ))}
+                          <div className="space-y-4">
+                            <p className="text-gray-200 text-lg font-medium drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+                            No account? Try these:
+                            </p>
+                            <div className="flex flex-wrap justify-center gap-4">
+                              {['Hikaru', 'GukeshDommaraju', 'TheVish'].map((name) => (
+                                <button
+                                  key={name}
+                                  onClick={() => handleSearch(name)}
+                                  className="px-6 py-3 bg-gray-900/80 rounded-lg text-gray-200 
+                                    hover:text-white border border-gray-700 
+                                    hover:border-gray-500 shadow-[0_0_15px_rgba(0,0,0,0.3)]
+                                    hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]
+                                    transition-all duration-300 hover:scale-105
+                                    backdrop-blur-sm"
+                                >
+                                  {name}
+                                </button>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
                       )}
                     </div>
 
                     {/* Footer Section */}
                     <footer className="w-full py-8">
-                      <p className="text-gray-500 text-sm mb-4 text-center">Connect with me:</p>
+                      <p className="text-gray-500 text-sm mb-4 text-center">
+                        Connect with me:
+                      </p>
                       <div className="flex justify-center space-x-6 animate-fadeIn">
                         {[
                           { href: "https://www.linkedin.com/in/aashishreddy", img: "/images/linkedin.png", alt: "LinkedIn" },
@@ -148,11 +151,20 @@ const App = () => {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm rounded-full hover:scale-110 transition-all duration-300 hover:shadow-lg group"
+                            className="p-2 bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm 
+                              rounded-full hover:scale-110 transition-all duration-300 
+                              hover:shadow-lg group"
                           >
-                            <img src={link.img} alt={link.alt} className="h-8 w-8 rounded-full" />
+                            <img 
+                              src={link.img} 
+                              alt={link.alt} 
+                              className="h-8 w-8 rounded-full" 
+                            />
                             {link.alt === "Resume" && (
-                              <span className="absolute -top-8 scale-0 rounded bg-gray-800 dark:bg-gray-200 p-2 text-xs text-white dark:text-gray-800 group-hover:scale-100 transition-all">
+                              <span className="absolute -top-8 scale-0 rounded bg-gray-800 
+                                dark:bg-gray-200 p-2 text-xs text-white dark:text-gray-800 
+                                group-hover:scale-100 transition-all"
+                              >
                                 View Resume
                               </span>
                             )}
