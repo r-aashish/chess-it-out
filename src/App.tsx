@@ -1,4 +1,4 @@
-import LogoDarkMode from '../images/Logo-DarkMode.png';
+import LogoDarkMode from '../images/Logo.png';
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getPlayerProfile, getPlayerStats, getPlayerGames } from "./services/chessApi";
@@ -57,44 +57,44 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="min-h-screen text-gray-900 dark:text-gray-100 transition-all duration-500 relative overflow-hidden">
-        {/* Chessboard pattern overlay with pointer-events disabled */}
-        <div
-          className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[size:40px_40px] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]"
-        />
+        {/* Keep existing chessboard pattern overlay */}
+        <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[size:40px_40px] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]" />
 
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ErrorBoundary>
-                  {selectedGame ? (
-                    <ChessAnalysis
-                      game={selectedGame}
-                      onClose={() => setSelectedGame(null)}
-                      username={profile?.username}
-                    />
-                  ) : (
-                    <div className="container mx-auto px-4 py-8 max-w-7xl">
-                      <div className="text-center mb-10 space-y-4">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ErrorBoundary>
+                {selectedGame ? (
+                  <ChessAnalysis
+                    game={selectedGame}
+                    onClose={() => setSelectedGame(null)}
+                    username={profile?.username}
+                  />
+                ) : (
+                  <div className="container mx-auto px-4 py-8 max-w-7xl min-h-screen flex flex-col items-center">
+                    {/* Hero Section */}
+                    <div className="flex flex-col items-center justify-center flex-grow mb-8">
+                      <div className="text-center space-y-6">
                         <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center justify-center hover:scale-105 transition-transform duration-300">
-                        <img
-                          src={LogoDarkMode}
-                          alt="ChessItOut Logo"
-                          className="h-40 w-72"
-                        />
-                      </h1>
-                      <p className="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto text-lg text-balance animate-typewriter">
-                        Explore Chess.com profiles and analyze game histories.
-                      </p>
-                    </div>
+                          <img
+                            src={LogoDarkMode}
+                            alt="Chess Suspect Logo"
+                            className="h-24 w-auto"
+                          />
+                        </h1>
+                        <p className="text-white dark:text-gray-200 text-lg md:text-xl font-medium animate-typewriter drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]">
+                          AI's got your back, crewmate!
+                        </p>
+                      </div>
 
-                      <div className="max-w-3xl mx-auto mb-8">
+                      <div className="w-full max-w-3xl mt-12">
                         <SearchForm onSearch={handleSearch} isLoading={isLoading} />
                         {error && <ErrorMessage message={error} />}
                       </div>
 
                       {profile && stats && (
-                        <div className="space-y-8 animate-slideUp">
+                        <div className="space-y-8 animate-slideUp w-full">
                           <ProfileCard profile={profile} />
                           <StatsCard stats={stats} />
                           <GamesList
@@ -107,112 +107,66 @@ const App = () => {
                       )}
 
                       {!profile && !error && !isLoading && (
-                        <div className="text-center mt-16 space-y-2">
-                          <p className="text-gray-500 text-sm mb-4"> Try these usernames </p>
-                          <div className="flex justify-center gap-3">
-                            {['Hikaru', 'GukeshDommaraju','TheVish'].map((name) => (
-                              <a
+                        <div className="text-center mt-16 space-y-6">
+                        <div className="space-y-4">
+                          <p className="text-gray-200 text-lg font-medium drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+                            Don't have an account? Try these players:
+                          </p>
+                          <div className="flex flex-wrap justify-center gap-4">
+                            {['Hikaru', 'GukeshDommaraju', 'TheVish'].map((name) => (
+                              <button
                                 key={name}
-                                href={`https://www.chess.com/member/${name}`}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleSearch(name);
-                                }}
-                                className="px-4 py-2 bg-gradient-to-r from-gray-100 to-white dark:from-gray-800 dark:to-gray-900 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 text-gray-700 dark:text-gray-300 hover:scale-105"
+                                onClick={() => handleSearch(name)}
+                                className="px-6 py-3 bg-gray-900/80 rounded-lg text-gray-200 hover:text-white
+                                  border border-gray-700 hover:border-gray-500
+                                  shadow-[0_0_15px_rgba(0,0,0,0.3)]
+                                  hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]
+                                  transition-all duration-300 hover:scale-105
+                                  backdrop-blur-sm"
                               >
                                 {name}
-                              </a>
+                              </button>
                             ))}
                           </div>
-                          <br />
-                          <br />
-                          <br />
-                          <br />
-                          <br />
-                          <br />
-                          <br />
-                          <br />
-                          <br />
+                        </div>
+                      </div>
+                      )}
+                    </div>
 
-                          <p className="text-gray-500 text-sm mt-12 mb-4 text-center">Connect with me:</p>
-                          <div id="initial-links" className="flex justify-center space-x-6 mt-6 animate-fadeIn">
-                            <a
-                              href="https://www.linkedin.com/in/aashishreddy"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm rounded-full hover:scale-110 transition-all duration-300 hover:shadow-lg group"
-                            >
-                              <img src="/images/linkedin.png" alt="LinkedIn" className="h-8 w-8 rounded-full" />
-                            </a>
-                            <a
-                              href="mailto:aashishreddy53@gmail.com"
-                              className="p-2 bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm rounded-full hover:scale-110 transition-all duration-300 hover:shadow-lg group"
-                            >
-                              <img src="/images/email.png" alt="Email" className="h-8 w-8 rounded-full" />                              
-                            </a>
-                            <a
-                              href="https://github.com/r-aashish"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm rounded-full hover:scale-110 transition-all duration-300 hover:shadow-lg group"
-                            >
-                              <img src="/images/github.png" alt="GitHub" className="h-8 w-8 rounded-full" />                              
-                            </a>
-                            <a
-                              href="https://aashish-resume.tiiny.site"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-2 bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm rounded-full hover:scale-110 transition-all duration-300 hover:shadow-lg group"
-                            >
-                              <img src="/images/resume.png" alt="Resume" className="h-8 w-8 rounded-full" />
+                    {/* Footer Section */}
+                    <footer className="w-full py-8">
+                      <p className="text-gray-500 text-sm mb-4 text-center">Connect with me:</p>
+                      <div className="flex justify-center space-x-6 animate-fadeIn">
+                        {[
+                          { href: "https://www.linkedin.com/in/aashishreddy", img: "/images/linkedin.png", alt: "LinkedIn" },
+                          { href: "mailto:aashishreddy53@gmail.com", img: "/images/email.png", alt: "Email" },
+                          { href: "https://github.com/r-aashish", img: "/images/github.png", alt: "GitHub" },
+                          { href: "https://aashish-resume.tiiny.site", img: "/images/resume.png", alt: "Resume" }
+                        ].map((link) => (
+                          <a
+                            key={link.alt}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm rounded-full hover:scale-110 transition-all duration-300 hover:shadow-lg group"
+                          >
+                            <img src={link.img} alt={link.alt} className="h-8 w-8 rounded-full" />
+                            {link.alt === "Resume" && (
                               <span className="absolute -top-8 scale-0 rounded bg-gray-800 dark:bg-gray-200 p-2 text-xs text-white dark:text-gray-800 group-hover:scale-100 transition-all">
                                 View Resume
                               </span>
-                            </a>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </ErrorBoundary>
-              }
-            />
-          </Routes>
-
-          {/* Sidebar with links (remove "hidden" class if you want it visible) */}
-          <div id="sidebar" className="fixed top-0 left-0 h-full w-16 py-4 z-50 flex flex-col items-center hidden">
-            <a
-              href="https://www.linkedin.com/in/aashishreddy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:opacity-75 transition-opacity duration-200 mb-4"
-            >
-              <img src="/images/linkedin.png" alt="LinkedIn" className="h-6 w-6 rounded-full" />
-            </a>
-            <a
-              href="mailto:aashishreddy53@gmail.com"
-              className="hover:opacity-75 transition-opacity duration-200 mb-4"
-            >
-              <img src="/images/email.png" alt="Email" className="h-6 w-6 rounded-full" />
-            </a>
-            <a
-              href="https://github.com/r-aashish"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:opacity-75 transition-opacity duration-200 mb-4"
-            >
-              <img src="/images/github.png" alt="GitHub" className="h-6 w-6 rounded-full" />
-            </a>
-            <a
-              href="https://aashish-resume.tiiny.site"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:opacity-75 transition-opacity duration-200"
-            >
-              <img src="/images/resume.png" alt="Resume" className="h-6 w-6 rounded-full" />
-            </a>
-          </div>
-        </div>
+                            )}
+                          </a>
+                        ))}
+                      </div>
+                    </footer>
+                  </div>
+                )}
+              </ErrorBoundary>
+            }
+          />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 };
