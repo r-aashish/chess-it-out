@@ -30,6 +30,7 @@
     "react-tooltip": "^5.28.0",
     "recharts": "^2.15.0",
     "rollup-plugin-copy": "^3.5.0",
+    "shadcn-ui": "^0.9.4",
     "stockfish.js": "^10.0.2"
   },
   "devDependencies": {
