@@ -95,7 +95,7 @@ const App = () => {
                       </div>
 
                       {profile && stats && (
-                        <div className="space-y-8 animate-slideUp w-full">
+                        <div className="space-y-8 animate-slideUp w-full mt-6">
                           <ProfileCard profile={profile} />
                           <StatsCard stats={stats} />
                           <GamesList
