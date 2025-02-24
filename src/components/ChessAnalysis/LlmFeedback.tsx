@@ -1,5 +1,5 @@
 // LlmFeedback.tsx
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { LoadingCircle } from '../icons';
 import { ChessGame } from '../../types/chess';
 import { parse, ParseTree } from '@mliebelt/pgn-parser';
@@ -36,9 +36,22 @@ const isParseTree = (parsed: any): parsed is ParseTree => {
 const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, setFeedback, username, pieceColor }) => {
   const [localFeedback, setLocalFeedback] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  const playerName = username || "User";
-  const playerColor = pieceColor || "their";
+    const playerName = username || "User";
+    const playerColor = pieceColor || "their";
+
+     useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
 
   if (!apiKey) {
     throw new Error('VITE_GEMINI_API_KEY environment variable is required');
@@ -146,8 +159,14 @@ const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, setFeedbac
     }
   };
 
+ const feedbackBoxHeight = isMobile ? '100px' : '200px';
   return (
-    <div className="bg-[#1b1b1b] rounded-sm overflow-hidden h-[200px]" style={{ width: '450px' }}>
+    <div
+      className={`bg-[#1b1b1b] rounded-sm overflow-hidden ${
+        isMobile ? 'no-padding' : ''
+      } mobile-scale`}
+      style={{ height: feedbackBoxHeight }}
+    >
       <div className="p-3 overflow-y-auto h-full scrollbar-thin scrollbar-thumb-[#3a3a3a] scrollbar-track-[#1b1b1b]">
         {localFeedback.length === 0 ? (
           <div className="flex items-center justify-center h-full">
