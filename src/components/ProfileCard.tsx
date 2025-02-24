@@ -74,7 +74,12 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) =
   const highestRating = stats?.chess_rapid?.best?.rating || 0;
 
   return (
+    
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 max-w-4xl mx-auto w-full">
+      {/* Subtle Heading */}
+      <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4">
+        Player Profile
+      </h2>
       <div className="flex items-start space-x-6 mb-6 flex-col sm:flex-row">
         <div className="relative">
           {username && (

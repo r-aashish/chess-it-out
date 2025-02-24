@@ -75,8 +75,11 @@ export const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl p-4 space-y-4">
-      <div className="flex items-center justify-between">
-      </div>
+    <div className="flex items-center justify-between">
+      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 ">
+          Game Stats & Ratings
+      </h2>
+    </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
         {gameTypes.map((type) => {
