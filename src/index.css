@@ -119,3 +119,40 @@ body {
 .scrollbar-thin::-webkit-scrollbar-track {
   background-color: #1b1b1b;
 }
+
+/* =================== */
+/* Mobile Styles      */
+/* =================== */
+@media (max-width: 768px) {
+  .analysis-content {
+    flex-direction: column;
+  }
+  .chessboard-wrapper {
+    width: 90%; /* Adjusted for overall scaling */
+    max-width: 90%; /* Adjusted for overall scaling */
+  }
+    .move-list-mobile {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .mobile-header {
+    padding: 0.5rem; /* Further reduced padding */
+    transform: scale(0.9);
+  }
+  .mobile-header h2 {
+    font-size: 1.1rem; /* Further reduced font size */
+  }
+  .mobile-avatar {
+    width: 1.8rem; /* Further reduced size */
+    height: 1.8rem; /* Further reduced size */
+  }
+  .mobile-username {
+    font-size: 0.7rem; /* Further reduced font size */
+  }
+  .no-padding {
+    padding: 0 !important;
+  }
+  .mobile-scale {
+    transform: scale(0.9);
+  }
+}

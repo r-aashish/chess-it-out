@@ -1,5 +1,4 @@
-// Moves.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChessGame, Move } from '../../types/chess';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Flip } from '../icons';
 
@@ -28,10 +27,25 @@ export const MoveList: React.FC<MoveListProps> = ({
   handleGoToMove,
   boardOrientation,
   setBoardOrientation,
-  moveHistoryLength
+  moveHistoryLength,
 }) => {
+   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const moveListHeight = isMobile ? 'auto' : '200px';
+  const moveContainerHeight = isMobile ? '40px' : 'auto';
   return (
-    <div className="flex flex-col gap-2" style={{ width: '450px' }}>
+    <div className={`flex flex-col gap-2 mobile-scale`} style={{ width: '450px' }}>
       <div className="h-9 bg-[#1b1b1b] rounded-sm flex items-center justify-center gap-1 shrink-0">
         <button
           onClick={() => handleGoToMove(0)}
@@ -67,38 +81,45 @@ export const MoveList: React.FC<MoveListProps> = ({
         </button>
       </div>
 
-      <div className="bg-[#1b1b1b] rounded-sm overflow-hidden h-[200px]">
-        <div className="p-3 overflow-y-auto h-full scrollbar-thin scrollbar-thumb-[#3a3a3a] scrollbar-track-[#1b1b1b]">
-          <div className="flex flex-wrap gap-x-2 gap-y-1">
-            {moves && moves.map((move, index) => (
-              <div key={index}>
-                <div className="flex items-center text-[11px] whitespace-nowrap">
-                  <span className="text-gray-500 font-mono mr-1">{move.moveNumber}.</span>
-                  <span
-                    className={`cursor-pointer px-1 rounded ${
-                      currentMove === index * 2 + 1 
-                        ? 'bg-[#3a3a3a] text-white' 
-                        : 'text-white hover:bg-[#2b2b2b]'
-                    }`}
-                    onClick={() => handleGoToMove(index * 2 + 1)}
-                  >
-                    {move.white}
-                  </span>
-                  {move.black && (
+      <div
+        className="bg-[#1b1b1b] rounded-sm overflow-hidden"
+        style={{ height: moveListHeight }}
+      >
+        <div
+          className="p-3 overflow-y-auto h-full scrollbar-thin scrollbar-thumb-[#3a3a3a] scrollbar-track-[#1b1b1b]"
+          style={{ height: moveContainerHeight }}
+        >
+          <div className="flex flex-wrap gap-x-2 gap-y-1 move-list-mobile">
+            {moves &&
+              moves.map((move, index) => (
+                <div key={index}>
+                  <div className="flex items-center text-[11px] whitespace-nowrap">
+                    <span className="text-gray-500 font-mono mr-1">{move.moveNumber}.</span>
                     <span
-                      className={`cursor-pointer px-1 ml-1 rounded ${
-                        currentMove === index * 2 + 2 
-                          ? 'bg-[#3a3a3a] text-white' 
+                      className={`cursor-pointer px-1 rounded ${
+                        currentMove === index * 2 + 1
+                          ? 'bg-[#3a3a3a] text-white'
                           : 'text-white hover:bg-[#2b2b2b]'
                       }`}
-                      onClick={() => handleGoToMove(index * 2 + 2)}
+                      onClick={() => handleGoToMove(index * 2 + 1)}
                     >
-                      {move.black}
+                      {move.white}
                     </span>
-                  )}
+                    {move.black && (
+                      <span
+                        className={`cursor-pointer px-1 ml-1 rounded ${
+                          currentMove === index * 2 + 2
+                            ? 'bg-[#3a3a3a] text-white'
+                            : 'text-white hover:bg-[#2b2b2b]'
+                        }`}
+                        onClick={() => handleGoToMove(index * 2 + 2)}
+                      >
+                        {move.black}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
