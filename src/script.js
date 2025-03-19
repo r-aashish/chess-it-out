@@ -130,15 +130,6 @@
                     src: "images/among-us-pieces/6.png",
                     width: 100,
                     height: 100
-                  },
-                  {
-                    src: "images/among-us-pieces/7.png",
-                    width: 100,
-                    height: 100
-                  },{
-                    src: "images/among-us-pieces/8.png",
-                    width: 100,
-                    height: 100
                   }
                 ]
               }
