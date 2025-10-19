@@ -21,6 +21,7 @@ interface LlmFeedbackProps {
   currentMove: number;
   username?: string;
   pieceColor?: string;
+  onFeedbackUpdate?: (feedback: string[]) => void;
 }
 
 const isParseTree = (parsed: unknown): parsed is ParseTree => {
@@ -32,7 +33,7 @@ const isParseTree = (parsed: unknown): parsed is ParseTree => {
  * for the current chess game. It uses the Gemini API to analyze the game
  * and provide insights for each move.
  */
-const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, username, pieceColor }) => {
+const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, username, pieceColor, onFeedbackUpdate }) => {
   const [localFeedback, setLocalFeedback] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -147,6 +148,9 @@ const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, username, 
       );
 
       setLocalFeedback(finalFeedback);
+      if (onFeedbackUpdate) {
+        onFeedbackUpdate(finalFeedback);
+      }
       
     } catch (error) {
       console.error('Analysis error:', error);

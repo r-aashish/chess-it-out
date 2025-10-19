@@ -10,6 +10,7 @@ import { ChessGame, Move } from '../../types/chess';
 import { X, ChevronLeft, Info } from '../icons';
 import LlmFeedback from './LlmFeedback';
 import { KeyboardShortcutsModal } from '../KeyboardShortcutsModal';
+import { ExportGame } from '../ExportGame';
 import { Keyboard } from 'lucide-react';
 
 /**
@@ -32,6 +33,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
   const [chess] = useState(new Chess());
   const [boardWidth, setBoardWidth] = useState(630);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
+  const [feedback, setFeedback] = useState<string[]>([]);
 
     useEffect(() => {
     const handleResize = () => {
@@ -226,7 +228,9 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
             currentMove={chessboardCurrentMove}
             username={username}
             pieceColor={boardOrientation === 'white' ? 'white' : 'black'}
+            onFeedbackUpdate={setFeedback}
           />
+          <ExportGame game={game} feedback={feedback} />
         </div>
 
         {showInfo && (
