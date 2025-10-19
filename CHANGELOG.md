@@ -31,8 +31,11 @@ All notable changes to this project will be documented in this file.
 - Fixed empty interface type declarations
 
 ### Changed
-- Updated vulnerable dependencies (axios, react-router-dom, @babel packages)
-- Reduced security vulnerabilities from 14 to 8
+- Updated vulnerable dependencies (axios, react-router-dom, form-data)
+- Reduced security vulnerabilities from 14 to 8 (using npm audit)
+  - Fixed: axios SSRF vulnerabilities, form-data crypto issues
+  - Remaining: dev dependencies (esbuild, vite) with moderate severity
+- Enhanced error handling and user feedback
 - Enhanced error handling and user feedback
 - Improved form validation in search component
 - Better loading states and user experience

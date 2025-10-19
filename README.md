@@ -15,7 +15,7 @@ ChessItOut is a web application that allows users to analyze chess.com profiles,
   - Move list with navigation.
   - Engine evaluation using Stockfish.js.
   - AI-powered feedback on each move using the Gemini API.
-  - Opening detection with ECO codes and descriptions.
+  - Opening detection with ECO codes (Encyclopaedia of Chess Openings) and descriptions.
   - Export game PGN and analysis.
 - **Keyboard Navigation:**
   - Arrow keys to navigate moves
