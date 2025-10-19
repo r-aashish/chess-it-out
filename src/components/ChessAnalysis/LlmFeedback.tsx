@@ -1,5 +1,5 @@
 // LlmFeedback.tsx
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LoadingCircle } from '../icons';
 import { ChessGame } from '../../types/chess';
 import { parse, ParseTree } from '@mliebelt/pgn-parser';
@@ -19,13 +19,13 @@ interface PgnMove {
 interface LlmFeedbackProps {
   game: ChessGame;
   currentMove: number;
-  setFeedback: Dispatch<SetStateAction<string[]>>;
   username?: string;
   pieceColor?: string;
+  onFeedbackUpdate?: (feedback: string[]) => void;
 }
 
-const isParseTree = (parsed: any): parsed is ParseTree => {
-  return parsed && Array.isArray(parsed.moves);
+const isParseTree = (parsed: unknown): parsed is ParseTree => {
+  return parsed !== null && typeof parsed === 'object' && 'moves' in parsed && Array.isArray((parsed as ParseTree).moves);
 };
 
 /**
@@ -33,7 +33,7 @@ const isParseTree = (parsed: any): parsed is ParseTree => {
  * for the current chess game. It uses the Gemini API to analyze the game
  * and provide insights for each move.
  */
-const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, setFeedback, username, pieceColor }) => {
+const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, username, pieceColor, onFeedbackUpdate }) => {
   const [localFeedback, setLocalFeedback] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -148,12 +148,13 @@ const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, setFeedbac
       );
 
       setLocalFeedback(finalFeedback);
-      setFeedback(finalFeedback);
+      if (onFeedbackUpdate) {
+        onFeedbackUpdate(finalFeedback);
+      }
       
     } catch (error) {
       console.error('Analysis error:', error);
       setLocalFeedback([`${playerName}, we'll focus on key moves. Try navigating through important positions!`]);
-      setFeedback([]);
     } finally {
       setLoading(false);
     }

@@ -4,6 +4,7 @@ import { Calendar, ChevronRight } from "./icons";
 import whiteBishop from "/images/white-bishop.png";
 import blackBishop from "/images/black-bishop.png";
 import { formatDate } from "../utils/date";
+import { GameFilterComponent, GameFilter } from "./GameFilter";
 
 interface GamesListProps {
   games: ChessGame[];
@@ -14,6 +15,11 @@ interface GamesListProps {
 
 export const GamesList: React.FC<GamesListProps> = ({ games, username, onGameSelect, isLoading }) => {
   const [filterResult, setFilterResult] = useState<string>("");
+  const [gameFilter, setGameFilter] = useState<GameFilter>({
+    search: '',
+    result: 'all',
+    timeControl: 'all',
+  });
 
   const getResultColor = (result: string): string => {
     const colorMap: { [key: string]: string } = {
@@ -32,20 +38,61 @@ export const GamesList: React.FC<GamesListProps> = ({ games, username, onGameSel
     return colorMap[result] || "bg-zinc-500 text-white";
   };
 
-  const filteredGames = filterResult
-    ? games.filter((game: ChessGame) => {
-        if (game.initialFen) return false;
-        const playerColor = game.white.username.toLowerCase() === username.toLowerCase() ? "white" : "black";
-        const playerData = playerColor === "white" ? game.white : game.black;
-        const result = playerData.result.toLowerCase();
-        switch (filterResult) {
-          case "win": return result === "win";
-          case "loss": return ["checkmated", "resigned", "timeout"].includes(result);
-          case "draw": return ["stalemate", "draw", "agreed", "repetition", "insufficient", "50move", "timevsinsufficient"].includes(result);
-          default: return true;
-        }
-      })
-    : games.filter((game: ChessGame) => !game.initialFen);
+  const getTimeControl = (timeClass: string): string => {
+    const timeMap: { [key: string]: string } = {
+      bullet: 'bullet',
+      blitz: 'blitz',
+      rapid: 'rapid',
+      daily: 'daily',
+    };
+    return timeMap[timeClass.toLowerCase()] || timeClass;
+  };
+
+  const filteredGames = games.filter((game: ChessGame) => {
+    if (game.initialFen) return false;
+    
+    const playerColor = game.white.username.toLowerCase() === username.toLowerCase() ? "white" : "black";
+    const opponentUsername = playerColor === "white" ? game.black.username : game.white.username;
+    const playerData = playerColor === "white" ? game.white : game.black;
+    const result = playerData.result.toLowerCase();
+    
+    // Search filter
+    if (gameFilter.search && !opponentUsername.toLowerCase().includes(gameFilter.search.toLowerCase())) {
+      return false;
+    }
+    
+    // Result filter
+    if (gameFilter.result !== 'all') {
+      switch (gameFilter.result) {
+        case "win":
+          if (result !== "win") return false;
+          break;
+        case "loss":
+          if (!["checkmated", "resigned", "timeout"].includes(result)) return false;
+          break;
+        case "draw":
+          if (!["stalemate", "draw", "agreed", "repetition", "insufficient", "50move", "timevsinsufficient"].includes(result)) return false;
+          break;
+      }
+    }
+    
+    // Legacy filter for backward compatibility
+    if (filterResult) {
+      switch (filterResult) {
+        case "win": if (result !== "win") return false; break;
+        case "loss": if (!["checkmated", "resigned", "timeout"].includes(result)) return false; break;
+        case "draw": if (!["stalemate", "draw", "agreed", "repetition", "insufficient", "50move", "timevsinsufficient"].includes(result)) return false; break;
+      }
+    }
+    
+    // Time control filter
+    if (gameFilter.timeControl !== 'all') {
+      const gameTimeControl = getTimeControl(game.time_class);
+      if (gameTimeControl !== gameFilter.timeControl) return false;
+    }
+    
+    return true;
+  });
 
   if (games.length === 0 && !isLoading) {
     return (
@@ -62,6 +109,11 @@ export const GamesList: React.FC<GamesListProps> = ({ games, username, onGameSel
         <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
           Recent Games
         </h2>
+        
+        {/* New Filter Component */}
+        <GameFilterComponent onFilterChange={setGameFilter} />
+        
+        {/* Legacy Quick Filters */}
         <div className="flex flex-wrap gap-2">
           {[
             { label: "Wins", value: "win", base: "bg-emerald-100 text-emerald-700", active: "bg-emerald-600 text-white" },

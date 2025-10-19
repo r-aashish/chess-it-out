@@ -10,6 +10,7 @@ import { ChessAnalysis } from "./components/ChessAnalysis";
 import { ErrorMessage } from "./components/ErrorMessage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { PlayerProfile, ChessStats, ChessGame } from "./types/chess";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 /**
  * App component is the main component of the application.
@@ -21,7 +22,6 @@ const App = () => {
   const [stats, setStats] = useState<ChessStats | null>(null);
   const [games, setGames] = useState<ChessGame[]>([]);
   const [selectedGame, setSelectedGame] = useState<ChessGame | null>(null);
-  const [prevGames, setPrevGames] = useState<ChessGame[]>([]);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,7 +48,7 @@ const App = () => {
       setProfile(profileData);
       setStats(statsData);
       setGames(gamesData);
-    } catch (err) {
+    } catch {
       setError("Could not find player. Please check the username and try again.");
     } finally {
       setIsLoading(false);
@@ -74,6 +74,11 @@ const App = () => {
                   />
                 ) : (
                   <div className="container mx-auto px-4 py-8 max-w-7xl min-h-screen flex flex-col items-center">
+                    {/* Theme Toggle - Fixed position */}
+                    <div className="fixed top-4 right-4 z-10">
+                      <ThemeToggle />
+                    </div>
+
                     {/* Hero Section */}
                     <div className="flex flex-col items-center justify-center flex-grow mb-8">
                       <div className="text-center space-y-6">

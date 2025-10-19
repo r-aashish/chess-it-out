@@ -5,15 +5,16 @@ import { useEngine } from '../../hooks/useEngine';
  * EngineEvaluationProps interface defines the props for the EngineEvaluation component.
  * It includes properties for the FEN position of the board.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface EngineEvaluationProps {
-  position: string;
+  // Placeholder for future props
 }
 
 /**
  * EngineEvaluation component displays the engine's analysis of the current board position.
  * It shows the engine's evaluation score and the best line of play.
  */
-export const EngineEvaluation: React.FC<EngineEvaluationProps> = ({ position }) => {
+export const EngineEvaluation: React.FC<EngineEvaluationProps> = () => {
   const { evaluation, isThinking, bestLine } = useEngine();
 
   return (

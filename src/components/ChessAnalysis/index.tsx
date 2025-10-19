@@ -9,7 +9,9 @@ import { Chess } from 'chess.js';
 import { ChessGame, Move } from '../../types/chess';
 import { X, ChevronLeft, Info } from '../icons';
 import LlmFeedback from './LlmFeedback';
-import EngineAnalysis from './EngineAnalysis';
+import { KeyboardShortcutsModal } from '../KeyboardShortcutsModal';
+import { ExportGame } from '../ExportGame';
+import { Keyboard } from 'lucide-react';
 
 /**
  * ChessAnalysisProps interface defines the props for the ChessAnalysis component.
@@ -29,8 +31,9 @@ interface ChessAnalysisProps {
 export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, username }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [chess] = useState(new Chess());
-  const [feedback, setFeedback] = useState<string[]>([]);
   const [boardWidth, setBoardWidth] = useState(630);
+  const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
+  const [feedback, setFeedback] = useState<string[]>([]);
 
     useEffect(() => {
     const handleResize = () => {
@@ -85,6 +88,18 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
         if (chessboardCurrentMove < moveHistoryLength) {
           handleGoToMove(chessboardCurrentMove + 1);
         }
+      } else if (event.key === 'f' || event.key === 'F') {
+        setBoardOrientation(prev => prev === 'white' ? 'black' : 'white');
+      } else if (event.key === 'Escape') {
+        if (showKeyboardShortcuts) {
+          setShowKeyboardShortcuts(false);
+        } else if (showInfo) {
+          setShowInfo(false);
+        } else {
+          onClose();
+        }
+      } else if (event.key === '?' && event.shiftKey) {
+        setShowKeyboardShortcuts(true);
       }
     };
 
@@ -92,7 +107,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [chessboardCurrentMove, handleGoToMove, moveHistoryLength]);
+  }, [chessboardCurrentMove, handleGoToMove, moveHistoryLength, setBoardOrientation, showKeyboardShortcuts, showInfo, onClose]);
 
   const { evaluation, bestMove, bestMoveArrow } = useChessEngine(fen);
 
@@ -109,12 +124,21 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
             </h2>
           </div>
         </div>
-        <button
-          onClick={() => setShowInfo(!showInfo)}
-          className="hover:bg-[#3d3d3d] p-2 rounded-lg transition-colors "
-        >
-          {showInfo ? <X className="w-6 h-6 text-white" /> : <Info className="w-6 h-6 text-white" />}
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowKeyboardShortcuts(true)}
+            className="hover:bg-[#3d3d3d] p-2 rounded-lg transition-colors"
+            title="Keyboard Shortcuts"
+          >
+            <Keyboard className="w-6 h-6 text-white" />
+          </button>
+          <button
+            onClick={() => setShowInfo(!showInfo)}
+            className="hover:bg-[#3d3d3d] p-2 rounded-lg transition-colors "
+          >
+            {showInfo ? <X className="w-6 h-6 text-white" /> : <Info className="w-6 h-6 text-white" />}
+          </button>
+        </div>
       </header>
 
       <div className="analysis-content flex-1 flex flex-col md:flex-row p-6 gap-6 overflow-hidden justify-center items-center">
@@ -202,10 +226,11 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
           <LlmFeedback
             game={game}
             currentMove={chessboardCurrentMove}
-            setFeedback={setFeedback}
             username={username}
             pieceColor={boardOrientation === 'white' ? 'white' : 'black'}
+            onFeedbackUpdate={setFeedback}
           />
+          <ExportGame game={game} feedback={feedback} />
         </div>
 
         {showInfo && (
@@ -218,6 +243,11 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
           </div>
         )}
       </div>
+
+      <KeyboardShortcutsModal 
+        isOpen={showKeyboardShortcuts}
+        onClose={() => setShowKeyboardShortcuts(false)}
+      />
     </div>
   );
 };

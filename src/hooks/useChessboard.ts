@@ -82,7 +82,7 @@ export const useChessboard = ({ initialFen, pgn, onMovesChange, onCurrentMoveCha
         onCurrentMoveChange(0);
       }
     }
-  }, [pgn, onMovesChange, onCurrentMoveChange]);
+  }, [pgn, onMovesChange, onCurrentMoveChange, chess]);
 
   const handleSquareClick = (square: Square) => {
     const piece = chess.get(square);

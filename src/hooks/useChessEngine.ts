@@ -23,10 +23,8 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
   //console.log('FEN:', fen);
   // Engine state
   const [evaluation, setEvaluation] = useState<number>(0);
-  const [depth, setDepth] = useState<number>(0);
   const [bestMove, setBestMove] = useState<string>('');
   const [bestMoveArrow, setBestMoveArrow] = useState<[Square, Square][]>([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isEngineReady, setIsEngineReady] = useState(false);
   const engineRef = useRef<Worker | null>(null);
   const [pv, setPv] = useState<string>('');
@@ -40,7 +38,7 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
         engineRef.current = worker;
 
         // Handle engine messages
-        worker.onmessage = (e: any) => {
+        worker.onmessage = (e: MessageEvent) => {
           const message = e.data;
           //console.log('Engine Message:', message);
 
@@ -54,18 +52,11 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
           if (message.startsWith('bestmove')) {
             const move = message.split(' ')[1];
             setBestMove(move);
-            setIsAnalyzing(false);
             return;
           }
 
           // Analysis info
           if (message.includes('info depth')) {
-            // Parse depth
-            const depthMatch = message.match(/depth (\\d+)/);
-            if (depthMatch) {
-              setDepth(parseInt(depthMatch[1]));
-            }
-
             // Parse score
             const scoreMatch = message.match(/score cp (?:-?\d+)/);
             const mateMatch = message.match(/score mate (-?\\d+)/);
@@ -120,7 +111,6 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
   const analyzePosition = useCallback((position: string) => {
     if (!engineRef.current || !isEngineReady) return;
 
-    setIsAnalyzing(true);
     engineRef.current.postMessage('stop');
     engineRef.current.postMessage(`position fen ${position}`);
     engineRef.current.postMessage('go movetime 500 depth 15');
@@ -130,7 +120,6 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
   const stopAnalysis = useCallback(() => {
     if (!engineRef.current) return;
     engineRef.current.postMessage('stop');
-    setIsAnalyzing(false);
   }, []);
 
     // Update bestMoveArrow when bestMove changes

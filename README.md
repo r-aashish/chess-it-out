@@ -6,12 +6,23 @@ ChessItOut is a web application that allows users to analyze chess.com profiles,
 
 - **Profile Analysis:** Search for chess.com players and view their profile information, including username, avatar, and rating.
 - **Game History:** Browse through a player's game history and select a game to analyze.
+- **Advanced Game Filtering:** 
+  - Search games by opponent name
+  - Filter by game result (wins, losses, draws)
+  - Filter by time control (bullet, blitz, rapid, daily)
 - **Detailed Game Analysis:**
   - Interactive chessboard display with move highlighting.
   - Move list with navigation.
   - Engine evaluation using Stockfish.js.
   - AI-powered feedback on each move using the Gemini API.
-- **Theme Toggle:** Switch between light and dark themes.
+  - Opening detection with ECO codes (Encyclopaedia of Chess Openings) and descriptions.
+  - Export game PGN and analysis.
+- **Keyboard Navigation:**
+  - Arrow keys to navigate moves
+  - 'F' to flip board orientation
+  - '?' for keyboard shortcuts help
+  - 'Esc' to close modals
+- **Theme Toggle:** Switch between light and dark themes with persistent storage.
 - **Responsive Design:** The application is designed to work on different screen sizes.
 
 ## Technologies Used

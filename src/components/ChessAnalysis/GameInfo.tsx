@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ChessGame } from '../../types/chess';
 import { X, Clock, Trophy, Calendar } from '../icons';
 import { format } from 'date-fns';
+import { detectOpening, getOpeningDescription } from '../../utils/openings';
+import { BookOpen } from 'lucide-react';
 
 /**
  * GameInfoProps interface defines the props for the GameInfo component.
@@ -44,6 +46,11 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game, onClose, moveHistory }
     : 'Unknown Date';
 
   const numberOfMoves = moveHistory?.length || 'Unknown';
+
+  // Detect opening
+  const opening = useMemo(() => {
+    return detectOpening(game.pgn);
+  }, [game.pgn]);
 
   // Define game details
   const details = [
@@ -116,7 +123,7 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game, onClose, moveHistory }
         </svg>
       ),
       label: 'Opening',
-      value: () => game.opening || 'Unknown',
+      value: () => opening ? `${opening.name} (${opening.eco})` : game.opening || 'Unknown',
     },
     {
       icon: (
@@ -159,6 +166,17 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game, onClose, moveHistory }
               value={detail.value()}
             />
           ))}
+          
+          {/* Opening Description */}
+          {opening && (
+            <div className="mt-4 p-3 bg-[#1b1b1b] rounded-lg">
+              <div className="flex items-center space-x-2 text-sm text-gray-400 mb-2">
+                <BookOpen className="w-4 h-4" />
+                <span>About this opening</span>
+              </div>
+              <p className="text-sm text-gray-300">{getOpeningDescription(opening.name)}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

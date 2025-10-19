@@ -7,10 +7,30 @@ interface SearchFormProps {
 
 export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) => {
   const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(username.trim().toLowerCase());
+    const trimmedUsername = username.trim().toLowerCase();
+    
+    // Basic validation
+    if (!trimmedUsername) {
+      setError("Please enter a username");
+      return;
+    }
+    
+    if (trimmedUsername.length < 3) {
+      setError("Username must be at least 3 characters");
+      return;
+    }
+    
+    setError("");
+    onSearch(trimmedUsername);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+    if (error) setError("");
   };
 
   return (
@@ -24,10 +44,14 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
           <input
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={handleInputChange}
             placeholder="Enter your Chess.com username"
-            className="w-full py-2 px-4 text-base bg-black text-white rounded-lg border border-white/30 focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:border-gray-500 transition-all duration-200 placeholder:text-gray-400"
+            className={`w-full py-2 px-4 text-base bg-black text-white rounded-lg border ${
+              error ? 'border-red-500' : 'border-white/30'
+            } focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:border-gray-500 transition-all duration-200 placeholder:text-gray-400`}
             disabled={isLoading}
+            aria-label="Chess.com username"
+            aria-invalid={!!error}
           />
 
           {/* Search button with size matching input */}
@@ -35,15 +59,23 @@ export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) =
             type="submit"
             disabled={!username.trim() || isLoading}
             className="absolute right-2 flex items-center justify-center w-8 h-8 bg-gray-700 text-white rounded-full border border-white/30 shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Search"
           >
             {isLoading ? (
               <div className="w-4 h-4 border-4 border-t-4 border-t-gray-300 border-gray-700 animate-spin rounded-full" />
             ) : (
-              <span className="text-lg">↵</span> // Arrow for a minimalist look
+              <span className="text-lg">↵</span>
             )}
           </button>
         </div>
       </div>
+      
+      {/* Error message */}
+      {error && (
+        <div className="mt-2 text-red-400 text-sm text-center animate-fadeIn">
+          {error}
+        </div>
+      )}
     </form>
   );
 };

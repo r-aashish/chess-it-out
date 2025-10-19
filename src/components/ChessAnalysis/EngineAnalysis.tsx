@@ -1,5 +1,4 @@
 import React from 'react';
-import { Move } from '../../types/chess';
 
 /**
  * EngineAnalysisProps interface defines the props for the EngineAnalysis component.
@@ -7,17 +6,14 @@ import { Move } from '../../types/chess';
  * the current move number, and the list of moves in the game.
  */
 interface EngineAnalysisProps {
-  evaluation?: number;
   bestMove?: string;
-  currentMove: number;
-  moves: Move[];
 }
 
 /**
  * EngineAnalysis component displays the engine's analysis of the current game position.
  * It shows the engine's evaluation and the suggested best move.
  */
-const EngineAnalysis: React.FC<EngineAnalysisProps> = ({ evaluation, bestMove, currentMove, moves }) => {
+const EngineAnalysis: React.FC<EngineAnalysisProps> = ({ bestMove }) => {
   
   return (
     <div className="bg-[#312e2b] p-4 rounded-lg shadow-xl text-white">

@@ -76,7 +76,7 @@ export const EvaluationBar: React.FC<EvaluationBarProps> = ({
 
   const height = React.useMemo(() => {
     return normalizeEvaluation(evaluation);
-  }, [evaluation, isEndgame]);
+  }, [evaluation, normalizeEvaluation]);
 
   const textColor = height > 50 ? '#000' : '#fff';
   const textShadow = height > 50

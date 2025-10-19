@@ -21,7 +21,7 @@ interface ChessBoardProps {
  * It allows the user to navigate through the moves and see the engine's analysis.
  */
 export const ChessBoard: React.FC<ChessBoardProps> = ({ game, onClose, username }) => {
-  const { position, currentMove, goToMove, goToNext, goToPrev } = useGamePosition(game.pgn);
+  const { position, goToNext, goToPrev } = useGamePosition(game.pgn);
   const playerColor = game.white.username.toLowerCase() === username.toLowerCase() ? "white" : "black";
   const orientation = playerColor === "white" ? "white" : "black";
 

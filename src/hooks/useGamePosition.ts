@@ -18,7 +18,7 @@ export const useGamePosition = (pgn: string) => {
     setMoves(history);
     game.reset();
     setPosition(game.fen());
-  }, [pgn]);
+  }, [pgn, game]);
 
   const goToMove = (moveIndex: number) => {
     game.reset();
