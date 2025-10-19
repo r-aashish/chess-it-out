@@ -7,7 +7,6 @@ import { Stockfish } from '../workers/stockfish';
 export const useEngine = () => {
   const [engine] = useState(() => new Stockfish());
   const [evaluation, setEvaluation] = useState<string>('0.0');
-  const [isThinking, setIsThinking] = useState(false);
   const [bestLine, setBestLine] = useState<string>('');
 
   useEffect(() => {
@@ -31,11 +30,11 @@ export const useEngine = () => {
     return () => {
       engine.terminate();
     };
-  }, []);
+  }, [engine]);
 
   return {
     evaluation,
-    isThinking,
+    isThinking: false,
     bestLine,
     analyzePosition: engine.analyzePosition.bind(engine),
   };

@@ -9,7 +9,6 @@ import { Chess } from 'chess.js';
 import { ChessGame, Move } from '../../types/chess';
 import { X, ChevronLeft, Info } from '../icons';
 import LlmFeedback from './LlmFeedback';
-import EngineAnalysis from './EngineAnalysis';
 
 /**
  * ChessAnalysisProps interface defines the props for the ChessAnalysis component.
@@ -29,7 +28,6 @@ interface ChessAnalysisProps {
 export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, username }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [chess] = useState(new Chess());
-  const [feedback, setFeedback] = useState<string[]>([]);
   const [boardWidth, setBoardWidth] = useState(630);
 
     useEffect(() => {
@@ -202,7 +200,6 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
           <LlmFeedback
             game={game}
             currentMove={chessboardCurrentMove}
-            setFeedback={setFeedback}
             username={username}
             pieceColor={boardOrientation === 'white' ? 'white' : 'black'}
           />

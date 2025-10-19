@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { PlayerProfile, ChessStats, ChessGame } from "../types/chess";
+import { PlayerProfile, ChessStats } from "../types/chess";
 import { Chessboard } from 'react-chessboard';
 import {
   Clock,
   User,
   Target,
-  TrendingUp,
   CheckIcon,
   MapPinIcon,
-  SparklesIcon,
   Scale,
   Info
 } from "./icons";
@@ -40,8 +38,8 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) =
         setLoading(true);
         const fetchedStats = await getPlayerStats(profile.username);
         setStats(fetchedStats);
-      } catch (err: any) {
-        setError(err.message || "Failed to load stats");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load stats");
       } finally {
         setLoading(false);
       }

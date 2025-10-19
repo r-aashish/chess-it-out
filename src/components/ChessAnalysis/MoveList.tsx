@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChessGame, Move } from '../../types/chess';
+import { Move } from '../../types/chess';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Flip } from '../icons';
 
 /**

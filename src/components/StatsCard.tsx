@@ -68,7 +68,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ stats }) => {
         current: last.rating,
         best: best.rating,
         record,
-        trend: last.rating - (data as any).previous?.rating || 0,
+        trend: last.rating - ((data as { previous?: { rating: number } }).previous?.rating || last.rating),
       },
     };
   };

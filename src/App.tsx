@@ -21,7 +21,6 @@ const App = () => {
   const [stats, setStats] = useState<ChessStats | null>(null);
   const [games, setGames] = useState<ChessGame[]>([]);
   const [selectedGame, setSelectedGame] = useState<ChessGame | null>(null);
-  const [prevGames, setPrevGames] = useState<ChessGame[]>([]);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,7 +47,7 @@ const App = () => {
       setProfile(profileData);
       setStats(statsData);
       setGames(gamesData);
-    } catch (err) {
+    } catch {
       setError("Could not find player. Please check the username and try again.");
     } finally {
       setIsLoading(false);
