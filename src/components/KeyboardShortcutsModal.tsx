@@ -6,9 +6,6 @@ interface KeyboardShortcutsModalProps {
   onClose: () => void;
 }
 
-/**
- * KeyboardShortcutsModal component displays a modal with keyboard shortcuts for the chess analysis.
- */
 export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
@@ -16,40 +13,29 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({ 
     { key: '←', description: 'Previous move' },
     { key: '→', description: 'Next move' },
     { key: 'F', description: 'Flip board orientation' },
+    { key: 'Shift + ?', description: 'Open shortcuts' },
     { key: 'Esc', description: 'Close modal or analysis' },
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
-      <div 
-        className="bg-[#312e2b] rounded-lg p-6 max-w-md w-full mx-4 relative"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-          aria-label="Close"
-        >
-          <X className="w-6 h-6" />
-        </button>
-        
-        <h2 className="text-2xl font-bold text-white mb-6">Keyboard Shortcuts</h2>
-        
-        <div className="space-y-4">
-          {shortcuts.map((shortcut, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <span className="text-gray-300">{shortcut.description}</span>
-              <kbd className="px-3 py-1.5 bg-[#1b1b1b] text-white rounded border border-gray-600 font-mono text-sm">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/70 px-4" onClick={onClose}>
+      <div className="analysis-card w-full max-w-md p-6" onClick={(event) => event.stopPropagation()}>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-xl font-bold text-slate-100">Keyboard Shortcuts</h3>
+          <button onClick={onClose} className="analysis-control-btn rounded-lg p-2" type="button" aria-label="Close">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {shortcuts.map((shortcut) => (
+            <div key={shortcut.key} className="flex items-center justify-between rounded-xl bg-slate-900/45 px-3 py-2">
+              <span className="text-sm text-slate-300">{shortcut.description}</span>
+              <kbd className="rounded-md border border-slate-500/50 bg-slate-800 px-2 py-1 text-xs font-semibold text-slate-100">
                 {shortcut.key}
               </kbd>
             </div>
           ))}
-        </div>
-        
-        <div className="mt-6 pt-4 border-t border-gray-600">
-          <p className="text-gray-400 text-sm">
-            Tip: Use arrow keys to navigate through moves quickly while analyzing your games.
-          </p>
         </div>
       </div>
     </div>

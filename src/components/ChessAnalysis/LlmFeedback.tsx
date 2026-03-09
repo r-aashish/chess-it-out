@@ -37,21 +37,11 @@ const createLocalFeedback = (pgn: string, playerName: string, playerColor: 'whit
       const actor = move.color === playerColorCode ? playerName : 'Opponent';
       const points: string[] = [];
 
-      if (CENTER_SQUARES.has(move.to)) {
-        points.push(`improves control of ${move.to}`);
-      }
-      if (move.captured) {
-        points.push(`wins material by capturing on ${move.to}`);
-      }
-      if (move.san.includes('+')) {
-        points.push('forces king safety concerns with check');
-      }
-      if (move.promotion) {
-        points.push(`promotes to ${move.promotion.toUpperCase()}`);
-      }
-      if (points.length === 0) {
-        points.push('keeps the position balanced while developing pieces');
-      }
+      if (CENTER_SQUARES.has(move.to)) points.push(`improves control of ${move.to}`);
+      if (move.captured) points.push(`wins material by capturing on ${move.to}`);
+      if (move.san.includes('+')) points.push('forces king safety concerns with check');
+      if (move.promotion) points.push(`promotes to ${move.promotion.toUpperCase()}`);
+      if (points.length === 0) points.push('keeps the position balanced while developing pieces');
 
       return `${actor} played ${move.san}, which ${points.join(' and ')}.`;
     });
@@ -63,23 +53,11 @@ const createLocalFeedback = (pgn: string, playerName: string, playerColor: 'whit
 const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, username, pieceColor, onFeedbackUpdate }) => {
   const [localFeedback, setLocalFeedback] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  const playerName = username || "User";
-  const playerColor = pieceColor || "white";
+  const playerName = username || 'User';
+  const playerColor = pieceColor || 'white';
   const hasApiKey = Boolean(apiKey);
   const cacheKey = useMemo(() => getFeedbackCacheKey(game), [game]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   useEffect(() => {
     setLocalFeedback([]);
@@ -111,9 +89,9 @@ const LlmFeedback: React.FC<LlmFeedbackProps> = ({ game, currentMove, username, 
         return;
       }
 
-      const parsedPgn = parse(game.pgn, { startRule: "game" });
-      if (!isParseTree(parsedPgn)) throw new Error("Failed to parse PGN moves");
-      
+      const parsedPgn = parse(game.pgn, { startRule: 'game' });
+      if (!isParseTree(parsedPgn)) throw new Error('Failed to parse PGN moves');
+
       const allMoves = parsedPgn.moves.map((move: PgnMove) => move.notation.notation);
       const batchSize = 30;
       const totalBatches = Math.ceil(allMoves.length / batchSize);
@@ -157,7 +135,7 @@ Start immediately with move ${batchStart + 1}'s analysis, maintaining this style
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -169,27 +147,24 @@ Start immediately with move ${batchStart + 1}'s analysis, maintaining this style
         if (!feedbackText) {
           throw new Error('Gemini returned no feedback text');
         }
-        
+
         const batchFeedback = feedbackText
           .split('%%%')
           .map((item: string) => item.trim())
           .filter((item: string) => item.length > 0);
 
-        const validatedFeedback = batchFeedback.length > currentBatch.length 
+        const validatedFeedback = batchFeedback.length > currentBatch.length
           ? batchFeedback.slice(0, currentBatch.length)
           : [
               ...batchFeedback,
-              ...Array(currentBatch.length - batchFeedback.length)
-                .fill(`${playerName}, insight pending for this move.`)
+              ...Array(currentBatch.length - batchFeedback.length).fill(`${playerName}, insight pending for this move.`),
             ];
 
         combinedFeedback = [...combinedFeedback, ...validatedFeedback];
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
 
-      const finalFeedback = allMoves.map((_, i) => 
-        combinedFeedback[i] || `${playerName}, insight pending for move ${i + 1}`
-      );
+      const finalFeedback = allMoves.map((_, index) => combinedFeedback[index] || `${playerName}, insight pending for move ${index + 1}`);
 
       setLocalFeedback(finalFeedback);
       onFeedbackUpdate?.(finalFeedback);
@@ -206,53 +181,48 @@ Start immediately with move ${batchStart + 1}'s analysis, maintaining this style
     }
   };
 
-  const feedbackBoxHeight = isMobile ? '120px' : '200px';
-
   return (
-    <div
-      className={`bg-[#1b1b1b] rounded-sm overflow-hidden ${
-        isMobile ? 'no-padding' : ''
-      } mobile-scale`}
-      style={{ height: feedbackBoxHeight }}
-    >
-      <div className="p-3 overflow-y-auto h-full scrollbar-thin scrollbar-thumb-[#3a3a3a] scrollbar-track-[#1b1b1b]">
+    <section className="analysis-card w-full max-w-[460px] p-3">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Coach Notes</p>
+        <p className="text-xs text-slate-400">Move-linked commentary</p>
+      </div>
+
+      <div className="scrollbar-thin min-h-[140px] max-h-[220px] overflow-y-auto rounded-xl bg-slate-950/40 p-3">
         {localFeedback.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 h-full">
-            {!loading && (
+          <div className="flex min-h-[110px] flex-col items-center justify-center gap-2 text-center">
+            {!loading ? (
               <>
                 <button
                   onClick={fetchLlmFeedback}
-                  className="text-gray-300 hover:text-white bg-[#2b2b2b] hover:bg-[#3a3a3a] px-4 py-2 rounded-sm text-sm transition-colors"
+                  className="analysis-control-btn rounded-xl px-4 py-2 text-sm font-semibold"
                   disabled={loading}
+                  type="button"
                 >
-                  {hasApiKey ? 'Get AI Feedback' : 'Generate Move Insights'}
+                  {hasApiKey ? 'Generate AI Feedback' : 'Generate Local Insights'}
                 </button>
-                {!hasApiKey && (
-                  <p className="text-xs text-gray-500 text-center">
-                    Add `VITE_GEMINI_API_KEY` to enable cloud AI commentary.
-                  </p>
-                )}
+                {!hasApiKey ? (
+                  <p className="text-xs text-slate-500">Add `VITE_GEMINI_API_KEY` for cloud commentary quality.</p>
+                ) : null}
               </>
-            )}
-            {loading && (
-              <div className="text-gray-300 text-center">
-                <LoadingCircle className="animate-spin h-8 w-8 mb-2 mx-auto" />
-                <p className="text-sm">Analyzing your game...</p>
+            ) : (
+              <div className="text-slate-300">
+                <LoadingCircle className="mx-auto mb-2 h-7 w-7 animate-spin" />
+                <p className="text-sm">Analyzing game...</p>
               </div>
             )}
           </div>
         ) : currentMove === 0 ? (
-          <div className="text-center text-gray-300 p-4">
-            <p className="text-lg mb-2">Analysis ready, {playerName}.</p>
-            <p className="text-sm opacity-75">Navigate moves to see feedback.</p>
+          <div className="flex min-h-[110px] items-center justify-center text-center text-sm text-slate-300">
+            Move insights are ready. Step through the game to view notes.
           </div>
         ) : (
-          <div className="text-gray-300 text-base font-serif p-2 bg-[#2b2b2b] rounded-sm">
+          <p className="rounded-lg bg-slate-900/60 p-3 text-sm leading-relaxed text-slate-200">
             {localFeedback[currentMove - 1] || `${playerName}, insight pending for this move.`}
-          </div>
+          </p>
         )}
       </div>
-    </div>
+    </section>
   );
 };
 

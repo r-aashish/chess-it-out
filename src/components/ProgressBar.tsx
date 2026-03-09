@@ -1,18 +1,11 @@
-import React from "react";
+import React from 'react';
 
-/**
- * ProgressBarProps interface defines the props for the ProgressBar component.
- * It includes properties for the number of wins, losses, and draws.
- */
 interface ProgressBarProps {
   wins: number;
   losses: number;
   draws: number;
 }
 
-/**
- * ProgressBar component displays a progress bar visualizing the win, loss, and draw percentages.
- */
 export const ProgressBar: React.FC<ProgressBarProps> = ({ wins, losses, draws }) => {
   const total = wins + losses + draws;
   const winPercent = (wins / total) * 100 || 0;
@@ -20,55 +13,32 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ wins, losses, draws })
   const lossPercent = (losses / total) * 100 || 0;
 
   return (
-    <div className="w-full space-y-2">
-      <div className="relative w-full h-3 rounded-full overflow-hidden bg-gray-200/50 dark:bg-gray-800 shadow-inner">
-        {/* Glow effect */}
-        <div className="absolute inset-0 rounded-full ring-1 ring-white/10" />
-        
-        {/* Win segment */}
+    <div className="space-y-2">
+      <div className="relative h-3 w-full overflow-hidden rounded-full bg-slate-300/30 dark:bg-slate-700/50">
+        <div className="absolute inset-y-0 left-0 bg-emerald-500 transition-all duration-700" style={{ width: `${winPercent}%` }} />
         <div
-          style={{ width: `${winPercent}%` }}
-          className="absolute inset-y-0 left-0 h-full bg-gradient-to-r from-green-600 to-green-400 transition-all duration-1000 ease-out delay-150"
-          title={`Wins: ${winPercent.toFixed(1)}%`}
-        >
-          
-        </div>
-
-        {/* Draw segment */}
-        <div
+          className="absolute inset-y-0 bg-amber-400 transition-all duration-700"
           style={{ width: `${drawPercent}%`, left: `${winPercent}%` }}
-          className="absolute inset-y-0 h-full bg-gradient-to-r gray transition-all duration-1000 ease-out delay-300"
-          title={`Draws: ${drawPercent.toFixed(1)}%`}
-        >
-          
-        </div>
-
-        {/* Loss segment */}
+        />
         <div
+          className="absolute inset-y-0 bg-rose-500 transition-all duration-700"
           style={{ width: `${lossPercent}%`, left: `${winPercent + drawPercent}%` }}
-          className="absolute inset-y-0 h-full bg-gradient-to-r from-red-600 to-red-400 transition-all duration-1000 ease-out delay-500"
-          title={`Losses: ${lossPercent.toFixed(1)}%`}
-        >
-          
-        </div>
+        />
       </div>
 
-      {/* Labels */}
-      <div className="flex justify-between items-center px-1 text-xs font-medium">
-        <div className="flex items-center space-x-2 text-green-600 dark:text-green-400">
-          <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-          <span>{wins} Wins ({winPercent.toFixed(1)}%)</span>
-        </div>
-        
-        <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
-          <span className="inline-block w-2 h-2 rounded-full bg-gray-500" />
-          <span>{draws} Draws ({drawPercent.toFixed(1)}%)</span>
-        </div>
-        
-        <div className="flex items-center space-x-2 text-red-600 dark:text-red-400">
-          <span className="inline-block w-2 h-2 rounded-full bg-red-500" />
-          <span>{losses} Losses ({lossPercent.toFixed(1)}%)</span>
-        </div>
+      <div className="grid gap-1 text-xs font-semibold text-[var(--text-muted)] sm:grid-cols-3">
+        <span className="inline-flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          {wins}W ({winPercent.toFixed(0)}%)
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-amber-400" />
+          {draws}D ({drawPercent.toFixed(0)}%)
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full bg-rose-500" />
+          {losses}L ({lossPercent.toFixed(0)}%)
+        </span>
       </div>
     </div>
   );

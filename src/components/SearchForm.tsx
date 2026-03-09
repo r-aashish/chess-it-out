@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { Search, ArrowRight } from 'lucide-react';
 
 interface SearchFormProps {
   onSearch: (username: string) => void;
@@ -6,76 +7,66 @@ interface SearchFormProps {
 }
 
 export const SearchForm: React.FC<SearchFormProps> = ({ onSearch, isLoading }) => {
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     const trimmedUsername = username.trim().toLowerCase();
-    
-    // Basic validation
+
     if (!trimmedUsername) {
-      setError("Please enter a username");
+      setError('Enter a Chess.com username');
       return;
     }
-    
+
     if (trimmedUsername.length < 3) {
-      setError("Username must be at least 3 characters");
+      setError('Username must be at least 3 characters long');
       return;
     }
-    
-    setError("");
+
+    setError('');
     onSearch(trimmedUsername);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
-    if (error) setError("");
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto px-4">
-      <div className="relative group">
-        {/* Subtle background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-500 rounded-lg opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
-
-        <div className="relative flex items-center">
-          {/* Input field */}
-          <input
-            type="text"
-            value={username}
-            onChange={handleInputChange}
-            placeholder="Enter your Chess.com username"
-            className={`w-full py-2 px-4 text-base bg-black text-white rounded-lg border ${
-              error ? 'border-red-500' : 'border-white/30'
-            } focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:border-gray-500 transition-all duration-200 placeholder:text-gray-400`}
-            disabled={isLoading}
-            aria-label="Chess.com username"
-            aria-invalid={!!error}
-          />
-
-          {/* Search button with size matching input */}
-          <button
-            type="submit"
-            disabled={!username.trim() || isLoading}
-            className="absolute right-2 flex items-center justify-center w-8 h-8 bg-gray-700 text-white rounded-full border border-white/30 shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Search"
-          >
-            {isLoading ? (
-              <div className="w-4 h-4 border-4 border-t-4 border-t-gray-300 border-gray-700 animate-spin rounded-full" />
-            ) : (
-              <span className="text-lg">↵</span>
-            )}
-          </button>
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <div className="ui-panel-subtle flex items-center gap-2 rounded-2xl p-2">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
+          <Search className="h-5 w-5" />
         </div>
+
+        <input
+          type="text"
+          value={username}
+          onChange={(event) => {
+            setUsername(event.target.value);
+            if (error) setError('');
+          }}
+          placeholder="Search Chess.com username"
+          className={`ui-input min-w-0 flex-1 rounded-xl px-4 py-3 text-sm font-medium placeholder:text-[var(--text-muted)] ${
+            error ? 'border-rose-500/70' : ''
+          }`}
+          disabled={isLoading}
+          aria-label="Chess.com username"
+          aria-invalid={Boolean(error)}
+        />
+
+        <button
+          type="submit"
+          disabled={!username.trim() || isLoading}
+          className="ui-btn-primary inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60"
+          aria-label="Search"
+        >
+          {isLoading ? (
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+          ) : (
+            <ArrowRight className="h-4 w-4" />
+          )}
+          <span className="hidden sm:inline">Analyze</span>
+        </button>
       </div>
-      
-      {/* Error message */}
-      {error && (
-        <div className="mt-2 text-red-400 text-sm text-center animate-fadeIn">
-          {error}
-        </div>
-      )}
+
+      {error ? <p className="px-1 text-sm font-medium text-rose-500">{error}</p> : null}
     </form>
   );
 };

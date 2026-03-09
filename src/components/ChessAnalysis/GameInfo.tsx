@@ -5,52 +5,27 @@ import { format } from 'date-fns';
 import { detectOpening, getOpeningDescription } from '../../utils/openings';
 import { BookOpen, Circle, Hash, FlagTriangleLeft, FlagTriangleRight, Swords } from 'lucide-react';
 
-/**
- * GameInfoProps interface defines the props for the GameInfo component.
- * It includes properties for the chess game details, a function to close the game info panel,
- * and the move history of the game.
- */
 interface GameInfoProps {
   game: ChessGame;
   onClose: () => void;
   moveHistory: string[];
 }
 
-/**
- * GameDetailRow component is a reusable component for displaying game detail rows.
- * It takes an icon, label, and value as props and renders them in a consistent format.
- */
-const GameDetailRow: React.FC<{
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}> = ({ icon, label, value }) => (
-  <div>
-    <div className="flex items-center space-x-2 text-sm text-gray-400 mb-2">
+const GameDetailRow: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({ icon, label, value }) => (
+  <div className="analysis-card p-3">
+    <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
       {icon}
       <span>{label}</span>
     </div>
-    <p className="font-medium text-white">{value}</p>
+    <p className="text-sm font-medium text-slate-100">{value}</p>
   </div>
 );
 
-/**
- * GameInfo component displays detailed information about a chess game.
- * It includes the game's time control, game type, played date, player usernames,
- * result, opening, and number of moves.
- */
 export const GameInfo: React.FC<GameInfoProps> = ({ game, onClose, moveHistory }) => {
-  // Format the game end time safely
-  const playedOn = game.end_time
-    ? format(new Date(game.end_time * 1000), 'MMMM dd, yyyy')
-    : 'Unknown Date';
-
+  const playedOn = game.end_time ? format(new Date(game.end_time * 1000), 'MMMM dd, yyyy') : 'Unknown Date';
   const numberOfMoves = moveHistory?.length || 'Unknown';
 
-  // Detect opening
-  const opening = useMemo(() => {
-    return detectOpening(game.pgn);
-  }, [game.pgn]);
+  const opening = useMemo(() => detectOpening(game.pgn), [game.pgn]);
 
   const resultSummary = useMemo(() => {
     if (game.white.result === 'win') return `${game.white.username} won (1-0)`;
@@ -58,88 +33,58 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game, onClose, moveHistory }
     return `Draw (${game.white.result} / ${game.black.result})`;
   }, [game.white.result, game.white.username, game.black.result, game.black.username]);
 
-  // Define game details
   const details = [
+    { icon: <Clock className="h-4 w-4" />, label: 'Time control', value: game.time_control || 'Unknown' },
     {
-      icon: <Clock className="w-4 h-4" />,
-      label: 'Time Control',
-      value: () => game.time_control || 'Unknown',
+      icon: <Trophy className="h-4 w-4" />,
+      label: 'Game type',
+      value: `${game.time_class || 'Unknown'} ${game.rated ? 'Rated' : 'Unrated'}`,
     },
+    { icon: <Calendar className="h-4 w-4" />, label: 'Played on', value: playedOn },
     {
-      icon: <Trophy className="w-4 h-4" />,
-      label: 'Game Type',
-      value: () => `${game.time_class || 'Unknown'} ${game.rated ? 'Rated' : 'Unrated'}`,
-    },
-    {
-      icon: <Calendar className="w-4 h-4" />,
-      label: 'Played On',
-      value: () => playedOn,
-    },
-    {
-      icon: <FlagTriangleLeft className="w-4 h-4" />,
+      icon: <FlagTriangleLeft className="h-4 w-4" />,
       label: 'White',
-      value: () => `${game.white?.username || 'Unknown'} (${game.white?.rating || '?'})`,
+      value: `${game.white?.username || 'Unknown'} (${game.white?.rating || '?'})`,
     },
     {
-      icon: <FlagTriangleRight className="w-4 h-4" />,
+      icon: <FlagTriangleRight className="h-4 w-4" />,
       label: 'Black',
-      value: () => `${game.black?.username || 'Unknown'} (${game.black?.rating || '?'})`,
+      value: `${game.black?.username || 'Unknown'} (${game.black?.rating || '?'})`,
     },
-    {
-      icon: <Swords className="w-4 h-4" />,
-      label: 'Result',
-      value: () => resultSummary,
-    },
-    {
-      icon: <Circle className="w-4 h-4" />,
-      label: 'Opening',
-      value: () => opening ? `${opening.name} (${opening.eco})` : game.opening || 'Unknown',
-    },
-    {
-      icon: <Hash className="w-4 h-4" />,
-      label: 'Number of Moves',
-      value: () => numberOfMoves.toString(),
-    },
+    { icon: <Swords className="h-4 w-4" />, label: 'Result', value: resultSummary },
+    { icon: <Circle className="h-4 w-4" />, label: 'Opening', value: opening ? `${opening.name} (${opening.eco})` : game.opening || 'Unknown' },
+    { icon: <Hash className="h-4 w-4" />, label: 'Half moves', value: numberOfMoves.toString() },
   ];
 
   return (
-    <div className="w-full h-full border-l border-[#403D39] p-4">
-      <div className="game-info-container bg-[#272522]">
-        {/* Header Section */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-semibold text-white">Game Details</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#403D39] transition-colors"
-            aria-label="Close game details"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Game Details */}
-        <div className="space-y-6">
-          {details.map((detail, index) => (
-            <GameDetailRow
-              key={index}
-              icon={detail.icon}
-              label={detail.label}
-              value={detail.value()}
-            />
-          ))}
-          
-          {/* Opening Description */}
-          {opening && (
-            <div className="mt-4 p-3 bg-[#1b1b1b] rounded-lg">
-              <div className="flex items-center space-x-2 text-sm text-gray-400 mb-2">
-                <BookOpen className="w-4 h-4" />
-                <span>About this opening</span>
-              </div>
-              <p className="text-sm text-gray-300">{getOpeningDescription(opening.name)}</p>
-            </div>
-          )}
-        </div>
+    <section className="h-full w-full rounded-2xl border border-slate-700/60 bg-slate-950/45 p-4">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-lg font-bold text-slate-100">Game Info</h3>
+        <button
+          onClick={onClose}
+          className="analysis-control-btn rounded-lg p-2"
+          aria-label="Close game details"
+          type="button"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
-    </div>
+
+      <div className="space-y-2">
+        {details.map((detail) => (
+          <GameDetailRow key={detail.label} icon={detail.icon} label={detail.label} value={detail.value} />
+        ))}
+
+        {opening ? (
+          <div className="analysis-card p-3">
+            <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+              <BookOpen className="h-4 w-4" />
+              About this opening
+            </div>
+            <p className="text-sm text-slate-200">{getOpeningDescription(opening.name)}</p>
+          </div>
+        ) : null}
+      </div>
+    </section>
   );
 };

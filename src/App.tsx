@@ -3,33 +3,29 @@ import LinkedInLogo from '../images/Linkedin.png';
 import EmailLogo from '../images/Email.png';
 import GithubLogo from '../images/Github.png';
 import ResumeLogo from '../images/Resume.png';
-import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { getPlayerProfile, getPlayerStats, getPlayerGames } from "./services/chessApi";
-import { SearchForm } from "./components/SearchForm";
-import { ProfileCard } from "./components/ProfileCard";
-import { StatsCard } from "./components/StatsCard";
-import { GamesList } from "./components/GamesList";
-import { ChessAnalysis } from "./components/ChessAnalysis";
-import { ErrorMessage } from "./components/ErrorMessage";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { PlayerProfile, ChessStats, ChessGame } from "./types/chess";
-import { ThemeToggle } from "./components/ThemeToggle";
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Sparkles, Wand2 } from 'lucide-react';
+import { getPlayerProfile, getPlayerStats, getPlayerGames } from './services/chessApi';
+import { SearchForm } from './components/SearchForm';
+import { ProfileCard } from './components/ProfileCard';
+import { StatsCard } from './components/StatsCard';
+import { GamesList } from './components/GamesList';
+import { ChessAnalysis } from './components/ChessAnalysis';
+import { ErrorMessage } from './components/ErrorMessage';
+import ErrorBoundary from './components/ErrorBoundary';
+import { PlayerProfile, ChessStats, ChessGame } from './types/chess';
+import { ThemeToggle } from './components/ThemeToggle';
 
 const RECENT_SEARCHES_KEY = 'chess-it-out-recent-searches';
 const MAX_RECENT_SEARCHES = 6;
 
-/**
- * App component is the main component of the application.
- * It handles the overall layout, routing, and data fetching.
- */
 const App = () => {
-  // State variables
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [stats, setStats] = useState<ChessStats | null>(null);
   const [games, setGames] = useState<ChessGame[]>([]);
   const [selectedGame, setSelectedGame] = useState<ChessGame | null>(null);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     if (typeof window === 'undefined') return [];
@@ -44,17 +40,12 @@ const App = () => {
     }
   });
 
-  /**
-   * handleSearch function handles the search for a Chess.com username.
-   * It fetches the player profile, stats, and games, and updates the state accordingly.
-   * @param username - The username to search for.
-   */
   const handleSearch = async (username: string) => {
     const normalizedUsername = username.trim().toLowerCase();
     if (!normalizedUsername) return;
 
     setIsLoading(true);
-    setError("");
+    setError('');
     setProfile(null);
     setStats(null);
     setGames([]);
@@ -70,10 +61,11 @@ const App = () => {
       setProfile(profileData);
       setStats(statsData);
       setGames(gamesData);
-      setRecentSearches((prev) => {
+
+      setRecentSearches((previous) => {
         const deduped = [
           profileData.username,
-          ...prev.filter((name) => name.toLowerCase() !== profileData.username.toLowerCase()),
+          ...previous.filter((name) => name.toLowerCase() !== profileData.username.toLowerCase()),
         ].slice(0, MAX_RECENT_SEARCHES);
 
         if (typeof window !== 'undefined') {
@@ -83,19 +75,25 @@ const App = () => {
         return deduped;
       });
     } catch (searchError) {
-      setError(searchError instanceof Error
-        ? searchError.message
-        : "Could not find player. Please check the username and try again.");
+      setError(searchError instanceof Error ? searchError.message : 'Could not fetch this profile.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const featuredAccounts = ['Hikaru', 'MagnusCarlsen', 'TheVish'];
+
+  const socialLinks = [
+    { href: 'https://www.linkedin.com/in/aashishreddy', img: LinkedInLogo, alt: 'LinkedIn' },
+    { href: 'mailto:aashishreddy53@gmail.com', img: EmailLogo, alt: 'Email' },
+    { href: 'https://github.com/r-aashish', img: GithubLogo, alt: 'GitHub' },
+    { href: 'https://aashish-resume.tiiny.site', img: ResumeLogo, alt: 'Resume' },
+  ];
+
   return (
     <BrowserRouter>
-      <div className="min-h-screen text-gray-900 dark:text-gray-100 transition-all duration-500 relative overflow-hidden">
-        {/* Chessboard pattern overlay */}
-        <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-[size:40px_40px] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]" />
+      <div className="app-shell">
+        <div className="app-gradient-mesh" />
 
         <Routes>
           <Route
@@ -103,144 +101,130 @@ const App = () => {
             element={
               <ErrorBoundary>
                 {selectedGame ? (
-                  <ChessAnalysis
-                    game={selectedGame}
-                    onClose={() => setSelectedGame(null)}
-                    username={profile?.username}
-                  />
+                  <ChessAnalysis game={selectedGame} onClose={() => setSelectedGame(null)} username={profile?.username} />
                 ) : (
-                  <div className="container mx-auto px-4 py-8 max-w-7xl min-h-screen flex flex-col items-center">
-                    {/* Theme Toggle - Fixed position */}
-                    <div className="fixed top-4 right-4 z-10">
-                      <ThemeToggle />
-                    </div>
-
-                    {/* Hero Section */}
-                    <div className="flex flex-col items-center justify-center flex-grow mb-8">
-                      <div className="text-center space-y-6">
-                        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent flex items-center justify-center hover:scale-105 transition-transform duration-300">
-                          <img
-                            src={Logo}
-                            alt="Chess Suspect Logo"
-                            className="h-24 w-auto"
-                          />
-                        </h1>
-                        <p className="text-white dark:text-gray-200 text-lg md:text-xl font-medium animate-typewriter drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]">
-                          AI-powered chess analysis to improve your game.
-                        </p>
+                  <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-6 md:px-8 md:py-8">
+                    <header className="ui-panel flex items-center justify-between rounded-2xl px-4 py-3 md:px-6">
+                      <div className="flex items-center gap-3">
+                        <img src={Logo} alt="ChessItOut" className="h-11 w-auto" />
+                        <div>
+                          <p className="ui-heading text-base font-bold md:text-lg">ChessItOut</p>
+                          <p className="ui-muted text-xs md:text-sm">Modern game review workspace</p>
+                        </div>
                       </div>
+                      <ThemeToggle />
+                    </header>
 
-                      <div className="w-full max-w-3xl mt-12">
-                        <SearchForm onSearch={handleSearch} isLoading={isLoading} />
-                        {error && <ErrorMessage message={error} />}
-                        {recentSearches.length > 0 && (
-                          <div className="mt-4 space-y-2 text-center">
-                            <div className="flex flex-wrap justify-center gap-2">
+                    <section className="ui-panel relative overflow-hidden rounded-[32px] p-6 md:p-10">
+                      <div className="absolute -right-8 -top-8 h-44 w-44 rounded-full bg-teal-400/20 blur-3xl" />
+                      <div className="absolute -bottom-12 left-1/3 h-52 w-52 rounded-full bg-amber-300/20 blur-3xl" />
+
+                      <div className="relative space-y-6">
+                        <div className="space-y-3">
+                          <p className="inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
+                            <Sparkles className="h-3.5 w-3.5" />
+                            Chess Coach Companion
+                          </p>
+                          <h1 className="ui-heading max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl">
+                            Explore any Chess.com profile with crisp stats, smart filters, and move-by-move analysis.
+                          </h1>
+                          <p className="ui-muted max-w-2xl text-sm md:text-base">
+                            Pull recent games instantly, spot trends, and jump straight into an interactive engine workspace.
+                          </p>
+                        </div>
+
+                        <div className="max-w-3xl">
+                          <SearchForm onSearch={handleSearch} isLoading={isLoading} />
+                          {error ? <ErrorMessage message={error} /> : null}
+                        </div>
+
+                        <div className="space-y-3">
+                          {recentSearches.length > 0 ? (
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">Recent</span>
                               {recentSearches.map((name) => (
                                 <button
                                   key={name}
                                   onClick={() => handleSearch(name)}
-                                  className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg border border-white/20 text-xs transition-colors"
+                                  className="ui-chip px-3 py-1 text-xs font-semibold"
+                                  type="button"
+                                >
+                                  {name}
+                                </button>
+                              ))}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setRecentSearches([]);
+                                  if (typeof window !== 'undefined') {
+                                    window.localStorage.removeItem(RECENT_SEARCHES_KEY);
+                                  }
+                                }}
+                                className="ui-link text-xs font-semibold"
+                              >
+                                Clear
+                              </button>
+                            </div>
+                          ) : null}
+
+                          {!profile && !error && !isLoading ? (
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">Try</span>
+                              {featuredAccounts.map((name) => (
+                                <button
+                                  key={name}
+                                  onClick={() => handleSearch(name)}
+                                  className="ui-chip px-3 py-1 text-xs font-semibold"
+                                  type="button"
                                 >
                                   {name}
                                 </button>
                               ))}
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setRecentSearches([]);
-                                if (typeof window !== 'undefined') {
-                                  window.localStorage.removeItem(RECENT_SEARCHES_KEY);
-                                }
-                              }}
-                              className="text-xs text-gray-300 hover:text-white underline underline-offset-2"
-                            >
-                              Clear recent searches
-                            </button>
-                          </div>
-                        )}
+                          ) : null}
+                        </div>
                       </div>
+                    </section>
 
-                      {profile && stats && (
-                        <div className="space-y-8 animate-slideUp w-full mt-6">
-                          <ProfileCard profile={profile} stats={stats} />
-                          <StatsCard stats={stats} />
-                          <GamesList
-                            games={games}
-                            username={profile.username}
-                            onGameSelect={setSelectedGame}
-                            isLoading={isLoading}
-                          />
+                    {profile && stats ? (
+                      <section className="space-y-5">
+                        <div className="ui-panel-subtle flex items-center justify-between rounded-2xl px-4 py-3">
+                          <p className="ui-heading text-sm font-semibold md:text-base">Loaded profile: {profile.username}</p>
+                          <span className="ui-badge inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold">
+                            <Wand2 className="h-3.5 w-3.5" />
+                            Ready for analysis
+                          </span>
                         </div>
-                      )}
 
-                      {!profile && !error && !isLoading && (
-                        <div className="text-center mt-12 space-y-5">
-                        <div className="space-y-3">
-                          <p className="text-gray-300 text-base font-medium drop-shadow-[0_0_6px_rgba(255,255,255,0.4)]">
-                            No account? Try these:
-                          </p>
-                          <div className="flex flex-wrap justify-center gap-2">
-                            {['Hikaru', 'MagnusCarlsen', 'TheVish'].map((name) => (
-                              <button
-                                key={name}
-                                onClick={() => handleSearch(name)}
-                                className="px-3 py-1.5 bg-gray-800/90 rounded-lg text-gray-300 
-                                           hover:text-white border border-gray-600 
-                                           hover:border-gray-400 shadow-[0_0_5px_rgba(0,0,0,0.3)]
-                                           hover:shadow-[0_0_10px_rgba(255,255,255,0.1)]
-                                           transition-all duration-200 hover:scale-105
-                                           text-xs backdrop-blur-md"
-                              >
-                                {name}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>                      
-                      )}
-                    </div>
+                        <ProfileCard profile={profile} stats={stats} />
+                        <StatsCard stats={stats} />
+                        <GamesList
+                          games={games}
+                          username={profile.username}
+                          onGameSelect={setSelectedGame}
+                          isLoading={isLoading}
+                        />
+                      </section>
+                    ) : null}
 
-                    {/* Footer Section */}
-                    <footer className="w-full py-8">
-                      <p className="text-gray-500 text-sm mb-4 text-center">
-                        Connect with me:
-                      </p>
-                      <div className="flex justify-center space-x-6 animate-fadeIn">
-                        {[
-                          { href: "https://www.linkedin.com/in/aashishreddy", img: LinkedInLogo, alt: "LinkedIn" },
-                          { href: "mailto:aashishreddy53@gmail.com", img: EmailLogo, alt: "Email" },
-                          { href: "https://github.com/r-aashish", img: GithubLogo, alt: "GitHub" },
-                          { href: "https://aashish-resume.tiiny.site", img: ResumeLogo, alt: "Resume" }
-                        ].map((link) => (
+                    <footer className="ui-panel mt-auto flex flex-col gap-3 rounded-2xl px-4 py-4 md:flex-row md:items-center md:justify-between md:px-6">
+                      <p className="ui-muted text-sm">Built by Aashish. Connect:</p>
+                      <div className="flex flex-wrap gap-3">
+                        {socialLinks.map((link) => (
                           <a
                             key={link.alt}
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 bg-white/20 dark:bg-gray-800/50 backdrop-blur-sm 
-                              rounded-full hover:scale-110 transition-all duration-300 
-                              hover:shadow-lg group"
+                            className="ui-btn-secondary inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold"
                           >
-                            <img 
-                              src={link.img} 
-                              alt={link.alt} 
-                              className="h-8 w-8 rounded-full" 
-                            />
-                            {link.alt === "Resume" && (
-                              <span className="absolute -top-8 scale-0 rounded bg-gray-800 
-                                dark:bg-gray-200 p-2 text-xs text-white dark:text-gray-800 
-                                group-hover:scale-100 transition-all"
-                              >
-                                View Resume
-                              </span>
-                            )}
+                            <img src={link.img} alt={link.alt} className="h-5 w-5 rounded-full" />
+                            {link.alt}
                           </a>
                         ))}
                       </div>
                     </footer>
-                  </div>
+                  </main>
                 )}
               </ErrorBoundary>
             }

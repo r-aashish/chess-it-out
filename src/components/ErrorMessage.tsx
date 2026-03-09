@@ -1,22 +1,15 @@
 import React from 'react';
 import { AlertCircle } from './icons';
 
-/**
- * ErrorMessageProps interface defines the props for the ErrorMessage component.
- * It includes a property for the error message to be displayed.
- */
 interface ErrorMessageProps {
   message: string;
 }
 
-/**
- * ErrorMessage component displays an error message with an alert icon.
- */
 export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   return (
-    <div className="flex items-center p-4 mb-4 text-red-800 bg-red-50 dark:bg-red-900/50 dark:text-red-200 rounded-lg">
-      <AlertCircle className="w-5 h-5 mr-2" />
-      <span>{message}</span>
+    <div className="ui-panel-subtle mt-4 flex items-start gap-3 rounded-2xl border-rose-300/50 bg-rose-50/70 p-4 text-rose-700 dark:border-rose-500/40 dark:bg-rose-950/35 dark:text-rose-200">
+      <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+      <span className="text-sm font-medium">{message}</span>
     </div>
   );
 };

@@ -40,8 +40,8 @@ interface ChessboardDisplayProps {
  * Includes background colors for dark and light squares.
  */
 const boardTheme = {
-  dark: { backgroundColor: '#7a9e5a' },
-  light: { backgroundColor: '#ebecd3' },
+  dark: { backgroundColor: '#4b6a88' },
+  light: { backgroundColor: '#dbe7f2' },
 };
 
 /**
@@ -141,8 +141,8 @@ export const ChessBoardDisplay: React.FC<ChessboardDisplayProps> = ({
         customDarkSquareStyle={boardTheme.dark}
         customLightSquareStyle={boardTheme.light}
         customBoardStyle={{
-          borderRadius: '4px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          borderRadius: '10px',
+          boxShadow: '0 14px 28px rgba(2, 6, 23, 0.35)',
         }}
         customArrows={[...bestMoveArrow, ...captureArrows]}
         customArrowColor="rgba(46, 204, 113, 0.9)"

@@ -1,5 +1,5 @@
-import React from "react";
-import { PlayerProfile, ChessStats } from "../types/chess";
+import React from 'react';
+import { PlayerProfile, ChessStats } from '../types/chess';
 import {
   Clock,
   User,
@@ -7,146 +7,122 @@ import {
   CheckIcon,
   MapPinIcon,
   Scale,
-  Info
-} from "./icons";
-import { formatDate, calculateWinLossRatio } from "../utils/date";
+  Info,
+} from './icons';
+import { formatDate, calculateWinLossRatio } from '../utils/date';
 
-/**
- * ProfileCardProps interface defines the props for the ProfileCard component.
- * It includes properties for the player profile and an optional username.
- */
 interface ProfileCardProps {
   profile: PlayerProfile;
   stats?: ChessStats | null;
 }
 
-/**
- * ProfileCard component displays a player's profile information, including their avatar,
- * username, name, location, followers, highest rating, join date, and win/loss ratio.
- */
+const StatTile: React.FC<{ icon: React.ReactNode; label: string; value: string; note?: string }> = ({
+  icon,
+  label,
+  value,
+  note,
+}) => (
+  <div className="ui-panel-subtle rounded-2xl p-4">
+    <div className="mb-2 flex items-center gap-2 text-[var(--text-muted)]">
+      {icon}
+      <span className="text-xs font-semibold uppercase tracking-[0.14em]">{label}</span>
+    </div>
+    <p className="text-xl font-bold text-[var(--text)]">{value}</p>
+    {note ? <p className="mt-1 text-xs text-[var(--text-muted)]">{note}</p> : null}
+  </div>
+);
+
 export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, stats }) => {
   const rapidWins = stats?.chess_rapid?.record?.win || 0;
   const rapidLosses = stats?.chess_rapid?.record?.loss || 0;
   const rapidWinLossRatio = calculateWinLossRatio(rapidWins, rapidLosses);
+
   const highestRating = Math.max(
     stats?.chess_rapid?.best?.rating || 0,
     stats?.chess_blitz?.best?.rating || 0,
     stats?.chess_bullet?.best?.rating || 0,
   );
-  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.username)}&background=1f2937&color=ffffff&size=128`;
+
+  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.username)}&background=0f172a&color=f8fafc&size=160`;
 
   return (
-    
-    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 p-6 max-w-4xl mx-auto w-full">
-      {/* Subtle Heading */}
-      <h2 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4">
-        Player Profile
-      </h2>
-      <div className="flex items-start space-x-6 mb-6 flex-col sm:flex-row">
-        <div className="relative">
-          <div className="relative">
-            <img
-              src={profile.avatar || fallbackAvatar}
-              alt={`${profile.username}'s avatar`}
-              className="w-24 h-24 rounded-xl border-4 border-white dark:border-gray-800 shadow-xl ring-4 ring-blue-100 dark:ring-blue-800/20"
-              onError={(e) => {
-                e.currentTarget.src = fallbackAvatar;
-              }}
-            />
-          </div>
-        </div>
+    <section className="ui-panel rounded-[28px] p-6 md:p-8">
+      <div className="mb-6 flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+        <div className="flex items-center gap-4">
+          <img
+            src={profile.avatar || fallbackAvatar}
+            alt={`${profile.username}'s avatar`}
+            className="h-20 w-20 rounded-2xl border border-[var(--card-border)] object-cover shadow-lg"
+            onError={(event) => {
+              event.currentTarget.src = fallbackAvatar;
+            }}
+          />
 
-        <div className="flex-1">
-          <div className="mb-3">
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <span>{profile.name || profile.username}</span>
-              {profile.country && (
-                <img
-                  src={`https://flagsapi.com/${profile.country.slice(-2)}/flat/32.png`}
-                  alt={profile.country}
-                  className="h-5 w-5 rounded-sm shadow-sm"
-                />
-              )}
-              {profile.verified && (
-                <span className="flex items-center px-2 py-1 text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-300 rounded-full">
-                  <CheckIcon className="w-4 h-4 mr-1" />
+          <div className="space-y-1">
+            <h2 className="ui-heading text-2xl font-bold md:text-3xl">{profile.name || profile.username}</h2>
+            <p className="ui-muted text-sm font-medium">@{profile.username}</p>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              {profile.country ? (
+                <span className="ui-badge inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold">
+                  <img
+                    src={`https://flagsapi.com/${profile.country.slice(-2)}/flat/32.png`}
+                    alt={profile.country}
+                    className="h-4 w-4 rounded-sm"
+                  />
+                  {profile.country}
+                </span>
+              ) : null}
+
+              {profile.verified ? (
+                <span className="ui-badge inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-[var(--accent)]">
+                  <CheckIcon className="h-4 w-4" />
                   Verified
                 </span>
-              )}
-            </h1>
-            {profile.name && (
-              <span className="text-base font-medium text-gray-500 dark:text-gray-400">
-                @{profile.username}
-              </span>
-            )}
-            {profile.location && (
-              <p className="flex items-center text-gray-500 dark:text-gray-400 mt-1">
-                <MapPinIcon className="w-4 h-4 mr-1 text-red-500" />
-                {profile.location}
-              </p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex items-center space-x-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <div className="p-1 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">
-                  {profile.followers.toLocaleString()}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <div className="p-1 bg-amber-100 dark:bg-amber-900/30 rounded-xl">
-                <Target className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Highest Rating</p>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">
-                  {highestRating}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <div className="p-1 bg-green-100 dark:bg-green-900/30 rounded-xl">
-                <Clock className="w-5 h-5 text-green-600 dark:text-green-400" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Joined</p>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">
-                  {formatDate(profile.joined)}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative group">
-              <div className="p-1 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
-                <Scale className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-              </div>
-              <div>
-                <div className="flex items-center space-x-1">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Win/Loss Ratio</p>
-                  <div className="relative">
-                    <Info className="w-4 h-4 text-gray-400 dark:text-gray-500 cursor-help" />
-                    <div className="absolute left-6 top-0 w-64 p-3 text-sm bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                      Win/Loss Ratio is calculated by dividing the number of wins by the number of losses. A ratio greater than 1 indicates more wins than losses.
-                    </div>
-                  </div>
-                </div>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">
-                  {rapidWinLossRatio}
-                </p>
-              </div>
+              ) : null}
             </div>
           </div>
         </div>
+
+        {profile.location ? (
+          <div className="ui-panel-subtle inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-[var(--text-muted)]">
+            <MapPinIcon className="h-4 w-4" />
+            {profile.location}
+          </div>
+        ) : null}
       </div>
 
-    </div>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <StatTile
+          icon={<User className="h-4 w-4" />}
+          label="Followers"
+          value={profile.followers.toLocaleString()}
+        />
+
+        <StatTile
+          icon={<Target className="h-4 w-4" />}
+          label="Peak Rating"
+          value={highestRating.toLocaleString()}
+        />
+
+        <StatTile
+          icon={<Clock className="h-4 w-4" />}
+          label="Joined"
+          value={formatDate(profile.joined)}
+        />
+
+        <StatTile
+          icon={<Scale className="h-4 w-4" />}
+          label="Rapid W/L"
+          value={rapidWinLossRatio}
+          note="Wins divided by losses in rapid games"
+        />
+      </div>
+
+      <div className="mt-4 flex items-start gap-2 rounded-xl bg-[var(--accent-soft)] px-3 py-2 text-xs text-[var(--text-muted)]">
+        <Info className="mt-0.5 h-4 w-4 shrink-0" />
+        Highest rating is the best among rapid, blitz, and bullet for this account snapshot.
+      </div>
+    </section>
   );
 };

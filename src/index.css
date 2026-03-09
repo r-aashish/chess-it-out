@@ -1,158 +1,318 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Set color scheme to light and dark */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+  --font-sans: 'Space Grotesk', sans-serif;
+  --font-display: 'Sora', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --bg: #f8fafc;
+  --bg-elevated: #ffffff;
+  --bg-soft: #eef3ff;
+  --card: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(15, 23, 42, 0.1);
+  --text: #0f172a;
+  --text-muted: #475569;
+  --accent: #0f766e;
+  --accent-strong: #0b4f4a;
+  --accent-soft: rgba(15, 118, 110, 0.12);
+  --danger: #be123c;
+  --ok: #047857;
+  --warn: #d97706;
+  --ring: rgba(15, 118, 110, 0.35);
+  --shadow: 0 22px 54px -28px rgba(15, 23, 42, 0.45);
 }
 
-/* Keyframes for gradient animation */
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.dark {
+  color-scheme: dark;
+  --bg: #05090f;
+  --bg-elevated: #0f1724;
+  --bg-soft: #0b1220;
+  --card: rgba(12, 19, 32, 0.78);
+  --card-border: rgba(148, 163, 184, 0.18);
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --accent: #2dd4bf;
+  --accent-strong: #0ea5a5;
+  --accent-soft: rgba(45, 212, 191, 0.14);
+  --danger: #fb7185;
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --ring: rgba(45, 212, 191, 0.35);
+  --shadow: 0 26px 60px -28px rgba(2, 6, 23, 0.85);
 }
 
-/* Apply gradient animation to elements with this class */
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient 3s ease infinite;
+* {
+  box-sizing: border-box;
 }
 
-/* Body styles */
-body {
+html,
+body,
+#root {
   margin: 0;
+  min-height: 100%;
+}
+
+body {
   min-width: 320px;
+  font-family: var(--font-sans);
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(45, 212, 191, 0.2), transparent 34%),
+    radial-gradient(circle at 84% 14%, rgba(251, 191, 36, 0.12), transparent 30%),
+    radial-gradient(circle at 44% 88%, rgba(14, 165, 233, 0.12), transparent 34%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.app-gradient-mesh {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+  background-image:
+    linear-gradient(120deg, rgba(15, 118, 110, 0.07), transparent 36%),
+    linear-gradient(-120deg, rgba(245, 158, 11, 0.05), transparent 34%),
+    linear-gradient(to right, rgba(148, 163, 184, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.09) 1px, transparent 1px);
+  background-size: auto, auto, 38px 38px, 38px 38px;
+  mask-image: radial-gradient(circle at center, black 55%, transparent 100%);
+}
+
+.app-shell {
+  position: relative;
   min-height: 100vh;
+  z-index: 1;
 }
 
-/* ==================== */
-/* ChessBoardDisplay CSS */
-/* ==================== */
-.chessboard-container {
-  margin: 0 auto;
-  position: relative;
+.ui-panel {
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  border-radius: 22px;
 }
 
-/* Keyframes for pulsing valid moves */
-@keyframes pulse-valid-move {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+.ui-panel-subtle {
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--bg-elevated) 72%, transparent);
+  border-radius: 16px;
 }
 
-/* Keyframes for pulsing checkmate */
+.ui-heading {
+  color: var(--text);
+}
+
+.ui-muted {
+  color: var(--text-muted);
+}
+
+.ui-badge {
+  border: 1px solid var(--card-border);
+  background: var(--bg-soft);
+  color: var(--text-muted);
+  border-radius: 999px;
+}
+
+.ui-chip {
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--bg-elevated) 84%, transparent);
+  color: var(--text);
+  border-radius: 999px;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.ui-chip:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ui-btn-primary {
+  border: 1px solid transparent;
+  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: #ffffff;
+  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+}
+
+.ui-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px -18px color-mix(in srgb, var(--accent) 70%, #000 30%);
+}
+
+.ui-btn-secondary {
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--bg-elevated) 88%, transparent);
+  color: var(--text);
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.ui-btn-secondary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+}
+
+.ui-input {
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--bg-elevated) 90%, transparent);
+  color: var(--text);
+}
+
+.ui-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+.ui-link {
+  color: var(--accent);
+}
+
+.ui-link:hover {
+  color: var(--accent-strong);
+}
+
+.analysis-shell {
+  background:
+    radial-gradient(circle at 10% 10%, rgba(45, 212, 191, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 14%, rgba(251, 191, 36, 0.12), transparent 30%),
+    #060b13;
+}
+
+.analysis-header {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(10, 16, 27, 0.78);
+  backdrop-filter: blur(10px);
+}
+
+.analysis-card {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(12, 19, 32, 0.78);
+  box-shadow: 0 20px 38px -24px rgba(2, 6, 23, 0.95);
+  border-radius: 16px;
+}
+
+.analysis-control-btn {
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: rgba(15, 23, 42, 0.62);
+  color: #dbeafe;
+}
+
+.analysis-control-btn:hover:not(:disabled) {
+  border-color: rgba(45, 212, 191, 0.72);
+  color: #ffffff;
+  background: rgba(45, 212, 191, 0.16);
+}
+
+.analysis-control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 @keyframes pulse-checkmate {
-  0% { background-color: rgba(255, 0, 0, 0.3); }
-  50% { background-color: rgba(255, 0, 0, 0.6); }
-  100% { background-color: rgba(255, 0, 0, 0.3); }
+  0% {
+    background-color: rgba(251, 113, 133, 0.35);
+  }
+  50% {
+    background-color: rgba(244, 63, 94, 0.6);
+  }
+  100% {
+    background-color: rgba(251, 113, 133, 0.35);
+  }
 }
 
-/* ================== */
-/* EvaluationBar CSS */
-/* ================== */
-.evaluation-bar {
-  margin: 0 auto;
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.evaluation-bar span {
-  user-select: none;
-}
-
-/* =============== */
-/* MoveList CSS */
-/* =============== */
-.move-list-container {
-  margin: 0 auto;
-  position: relative;
-}
-
-.move-list-container .scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
-}
-
-.move-list-container .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: #3a3a3a;
-  border-radius: 3px;
-}
-
-.move-list-container .scrollbar-thin::-webkit-scrollbar-track {
-  background-color: #1b1b1b;
-}
-
-/* ================ */
-/* LlmFeedback CSS */
-/* ================ */
-.llm-feedback-container {
-  margin: 0 auto;
-  position: relative;
-}
-
-.llm-feedback-container .scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
-}
-
-.llm-feedback-container .scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: #3a3a3a;
-  border-radius: 3px;
-}
-
-.llm-feedback-container .scrollbar-thin::-webkit-scrollbar-track {
-  background-color: #1b1b1b;
-}
-
-/* =================== */
-/* Global Scrollbar CSS */
-/* =================== */
 .scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: #3a3a3a;
-  border-radius: 3px;
+  width: 8px;
+  height: 8px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
-  background-color: #1b1b1b;
+  background: rgba(148, 163, 184, 0.14);
+  border-radius: 999px;
 }
 
-/* =================== */
-/* Mobile Styles      */
-/* =================== */
-@media (max-width: 768px) {
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent) 48%, #64748b 52%);
+  border-radius: 999px;
+}
+
+@media (max-width: 1024px) {
   .analysis-content {
     flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
   }
-  .chessboard-wrapper {
-    width: 90%; /* Adjusted for overall scaling */
-    max-width: 90%; /* Adjusted for overall scaling */
+
+  .analysis-side-column {
+    width: 100%;
+    margin: 0;
   }
-    .move-list-mobile {
+
+  .analysis-board-column {
+    margin: 0;
+    align-items: center;
+  }
+
+  .analysis-info-panel {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-header {
+    padding: 0.75rem;
+  }
+
+  .mobile-header-text {
+    font-size: 1rem;
+  }
+
+  .mobile-avatar {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .mobile-username {
+    font-size: 0.72rem;
+  }
+
+  .move-list-mobile {
     flex-wrap: nowrap;
     overflow-x: auto;
   }
-  .mobile-header {
-    padding: 0.5rem; /* Further reduced padding */
-    transform: scale(0.9);
-  }
-  .mobile-header h2 {
-    font-size: 1.1rem; /* Further reduced font size */
-  }
-  .mobile-avatar {
-    width: 1.8rem; /* Further reduced size */
-    height: 1.8rem; /* Further reduced size */
-  }
-  .mobile-username {
-    font-size: 0.7rem; /* Further reduced font size */
-  }
+
   .no-padding {
     padding: 0 !important;
-  }
-  .mobile-scale {
-    transform: scale(0.9);
   }
 }

@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Move } from '../../types/chess';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Flip } from '../icons';
 
-/**
- * MoveListProps interface defines the props for the MoveList component.
- * It includes properties for the list of moves, the current move number,
- * a function to handle going to a specific move, the board orientation,
- * a function to set the board orientation, and the move history length.
- */
 interface MoveListProps {
   moves: Move[];
   currentMove: number;
@@ -17,10 +11,6 @@ interface MoveListProps {
   moveHistoryLength: number;
 }
 
-/**
- * MoveList component displays the list of moves in the chess game.
- * It allows the user to navigate through the moves and change the board orientation.
- */
 export const MoveList: React.FC<MoveListProps> = ({
   moves,
   currentMove,
@@ -29,100 +19,78 @@ export const MoveList: React.FC<MoveListProps> = ({
   setBoardOrientation,
   moveHistoryLength,
 }) => {
-   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  const moveListHeight = isMobile ? 'auto' : '200px';
-  const moveContainerHeight = isMobile ? '40px' : 'auto';
   return (
-    <div className={`flex flex-col gap-2 mobile-scale`} style={{ width: '450px' }}>
-      <div className="h-9 bg-[#1b1b1b] rounded-sm flex items-center justify-center gap-1 shrink-0">
-        <button
-          onClick={() => handleGoToMove(0)}
-          className="p-2 text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded transition-colors"
-        >
-          <ChevronsLeft className="w-4 h-4" />
+    <section className="analysis-card w-full max-w-[460px] p-3">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Move List</p>
+        <p className="text-xs text-slate-400">
+          Move {currentMove} / {moveHistoryLength}
+        </p>
+      </div>
+
+      <div className="mb-3 flex items-center justify-center gap-1 rounded-xl bg-slate-900/45 p-1">
+        <button onClick={() => handleGoToMove(0)} className="analysis-control-btn rounded-lg p-2" type="button">
+          <ChevronsLeft className="h-4 w-4" />
         </button>
         <button
           onClick={() => handleGoToMove(currentMove - 1)}
           disabled={currentMove === 0}
-          className="p-2 text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+          className="analysis-control-btn rounded-lg p-2"
+          type="button"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="h-4 w-4" />
         </button>
         <button
           onClick={() => setBoardOrientation(boardOrientation === 'white' ? 'black' : 'white')}
-          className="p-2 text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded transition-colors"
+          className="analysis-control-btn rounded-lg p-2"
+          type="button"
         >
-          <Flip className="w-4 h-4" />
+          <Flip className="h-4 w-4" />
         </button>
         <button
           onClick={() => handleGoToMove(currentMove + 1)}
           disabled={currentMove >= moveHistoryLength}
-          className="p-2 text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+          className="analysis-control-btn rounded-lg p-2"
+          type="button"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="h-4 w-4" />
         </button>
-        <button
-          onClick={() => handleGoToMove(moveHistoryLength)}
-          className="p-2 text-gray-400 hover:text-white hover:bg-[#3a3a3a] rounded transition-colors"
-        >
-          <ChevronsRight className="w-4 h-4" />
+        <button onClick={() => handleGoToMove(moveHistoryLength)} className="analysis-control-btn rounded-lg p-2" type="button">
+          <ChevronsRight className="h-4 w-4" />
         </button>
       </div>
 
-      <div
-        className="bg-[#1b1b1b] rounded-sm overflow-hidden"
-        style={{ height: moveListHeight }}
-      >
-        <div
-          className="p-3 overflow-y-auto h-full scrollbar-thin scrollbar-thumb-[#3a3a3a] scrollbar-track-[#1b1b1b]"
-          style={{ height: moveContainerHeight }}
-        >
-          <div className="flex flex-wrap gap-x-2 gap-y-1 move-list-mobile">
-            {moves &&
-              moves.map((move, index) => (
-                <div key={index}>
-                  <div className="flex items-center text-[11px] whitespace-nowrap">
-                    <span className="text-gray-500 font-mono mr-1">{move.moveNumber}.</span>
-                    <span
-                      className={`cursor-pointer px-1 rounded ${
-                        currentMove === index * 2 + 1
-                          ? 'bg-[#3a3a3a] text-white'
-                          : 'text-white hover:bg-[#2b2b2b]'
-                      }`}
-                      onClick={() => handleGoToMove(index * 2 + 1)}
-                    >
-                      {move.white}
-                    </span>
-                    {move.black && (
-                      <span
-                        className={`cursor-pointer px-1 ml-1 rounded ${
-                          currentMove === index * 2 + 2
-                            ? 'bg-[#3a3a3a] text-white'
-                            : 'text-white hover:bg-[#2b2b2b]'
-                        }`}
-                        onClick={() => handleGoToMove(index * 2 + 2)}
-                      >
-                        {move.black}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-          </div>
+      <div className="scrollbar-thin max-h-[250px] overflow-y-auto rounded-xl bg-slate-950/40 p-3">
+        <div className="flex flex-wrap gap-x-2 gap-y-1 text-[12px] move-list-mobile">
+          {moves.map((move, index) => (
+            <div key={`${move.moveNumber}-${move.white}-${move.black}`} className="whitespace-nowrap">
+              <span className="mr-1 text-slate-500">{move.moveNumber}.</span>
+
+              <button
+                type="button"
+                className={`rounded px-1.5 py-0.5 ${
+                  currentMove === index * 2 + 1 ? 'bg-teal-400/20 text-teal-200' : 'text-slate-200 hover:bg-slate-700/40'
+                }`}
+                onClick={() => handleGoToMove(index * 2 + 1)}
+              >
+                {move.white}
+              </button>
+
+              {move.black ? (
+                <button
+                  type="button"
+                  className={`ml-1 rounded px-1.5 py-0.5 ${
+                    currentMove === index * 2 + 2 ? 'bg-teal-400/20 text-teal-200' : 'text-slate-200 hover:bg-slate-700/40'
+                  }`}
+                  onClick={() => handleGoToMove(index * 2 + 2)}
+                >
+                  {move.black}
+                </button>
+              ) : null}
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };

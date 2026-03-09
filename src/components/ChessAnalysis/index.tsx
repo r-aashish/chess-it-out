@@ -10,58 +10,45 @@ import { X, ChevronLeft, Info } from '../icons';
 import LlmFeedback from './LlmFeedback';
 import { KeyboardShortcutsModal } from '../KeyboardShortcutsModal';
 import { ExportGame } from '../ExportGame';
-import { Keyboard } from 'lucide-react';
+import { Keyboard, Sparkle } from 'lucide-react';
 
-/**
- * ChessAnalysisProps interface defines the props for the ChessAnalysis component.
- * It includes properties for the chess game details, a function to close the analysis,
- * and the username of the current user.
- */
 interface ChessAnalysisProps {
   game: ChessGame;
   onClose: () => void;
   username?: string;
 }
 
-/**
- * ChessAnalysis component is the main component for analyzing a chess game.
- * It displays the chessboard, move list, engine analysis, and game information.
- */
 export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, username }) => {
   const [showInfo, setShowInfo] = useState(false);
   const [boardWidth, setBoardWidth] = useState(630);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
   const [feedback, setFeedback] = useState<string[]>([]);
+
   const normalizedUsername = username?.toLowerCase();
   const playerColor: 'white' | 'black' =
-    normalizedUsername && game.black.username.toLowerCase() === normalizedUsername
-      ? 'black'
-      : 'white';
+    normalizedUsername && game.black.username.toLowerCase() === normalizedUsername ? 'black' : 'white';
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setBoardWidth(Math.max(280, window.innerWidth - 32));
+        setBoardWidth(Math.max(280, window.innerWidth - 38));
+      } else if (window.innerWidth < 1200) {
+        setBoardWidth(520);
       } else {
         setBoardWidth(630);
       }
     };
 
-    handleResize(); // Set initial width
-
+    handleResize();
     window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const captureArrows: [import("chess.js").Square, import("chess.js").Square][] = [];
+  const captureArrows: [import('chess.js').Square, import('chess.js').Square][] = [];
   const isCheckmate = false;
 
   const handleMovesChange = useCallback((newMoves: Move[]) => {
-    if (!newMoves.length) {
-      setFeedback([]);
-    }
+    if (!newMoves.length) setFeedback([]);
   }, []);
 
   const {
@@ -77,7 +64,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
     currentMove: chessboardCurrentMove,
     moveHistoryLength,
     moves,
-    moveHistory
+    moveHistory,
   } = useChessboard({
     initialFen: game.fen,
     pgn: game.pgn,
@@ -87,100 +74,98 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowLeft') {
-        if (chessboardCurrentMove > 0) {
-          handleGoToMove(chessboardCurrentMove - 1);
-        }
-      } else if (event.key === 'ArrowRight') {
-        if (chessboardCurrentMove < moveHistoryLength) {
-          handleGoToMove(chessboardCurrentMove + 1);
-        }
+      if (event.key === 'ArrowLeft' && chessboardCurrentMove > 0) {
+        handleGoToMove(chessboardCurrentMove - 1);
+      } else if (event.key === 'ArrowRight' && chessboardCurrentMove < moveHistoryLength) {
+        handleGoToMove(chessboardCurrentMove + 1);
       } else if (event.key === 'f' || event.key === 'F') {
-        setBoardOrientation(prev => prev === 'white' ? 'black' : 'white');
+        setBoardOrientation((previous) => (previous === 'white' ? 'black' : 'white'));
       } else if (event.key === 'Escape') {
-        if (showKeyboardShortcuts) {
-          setShowKeyboardShortcuts(false);
-        } else if (showInfo) {
-          setShowInfo(false);
-        } else {
-          onClose();
-        }
+        if (showKeyboardShortcuts) setShowKeyboardShortcuts(false);
+        else if (showInfo) setShowInfo(false);
+        else onClose();
       } else if (event.key === '?' && event.shiftKey) {
         setShowKeyboardShortcuts(true);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [chessboardCurrentMove, handleGoToMove, moveHistoryLength, setBoardOrientation, showKeyboardShortcuts, showInfo, onClose]);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    chessboardCurrentMove,
+    handleGoToMove,
+    moveHistoryLength,
+    onClose,
+    setBoardOrientation,
+    showInfo,
+    showKeyboardShortcuts,
+  ]);
 
   const { evaluation, bestMove, bestMoveArrow } = useChessEngine(fen);
 
   return (
-    <div className="fixed inset-0 bg-[#262421] flex flex-col h-screen overflow-hidden chess-analysis-container">
-      <header className="bg-[#312e2b] text-white p-4 flex items-center justify-between border-b border-[#3d3d3d] mobile-header">
-        <div className="flex items-center space-x-4">
-          <button onClick={onClose} className="hover:bg-[#3d3d3d] p-2 rounded-lg transition-colors">
-            <ChevronLeft className="w-6 h-6 text-white" />
+    <div className="analysis-shell fixed inset-0 z-50 flex h-screen flex-col overflow-hidden">
+      <header className="analysis-header mobile-header flex items-center justify-between px-4 py-3 text-slate-100">
+        <div className="flex items-center gap-3">
+          <button onClick={onClose} className="analysis-control-btn rounded-xl p-2" type="button">
+            <ChevronLeft className="h-5 w-5" />
           </button>
           <div>
-            <h2 className="font-bold text-xl flex items-center mobile-header-text">
-              Game Analysis
-            </h2>
+            <h2 className="mobile-header-text text-lg font-bold">Game Analysis</h2>
+            <p className="text-xs text-slate-400">{game.white.username} vs {game.black.username}</p>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setShowKeyboardShortcuts(true)}
-            className="hover:bg-[#3d3d3d] p-2 rounded-lg transition-colors"
+            className="analysis-control-btn rounded-xl p-2"
             title="Keyboard Shortcuts"
+            type="button"
           >
-            <Keyboard className="w-6 h-6 text-white" />
+            <Keyboard className="h-5 w-5" />
           </button>
           <button
-            onClick={() => setShowInfo(!showInfo)}
-            className="hover:bg-[#3d3d3d] p-2 rounded-lg transition-colors "
+            onClick={() => setShowInfo((previous) => !previous)}
+            className="analysis-control-btn rounded-xl p-2"
+            title="Game info"
+            type="button"
           >
-            {showInfo ? <X className="w-6 h-6 text-white" /> : <Info className="w-6 h-6 text-white" />}
+            {showInfo ? <X className="h-5 w-5" /> : <Info className="h-5 w-5" />}
           </button>
         </div>
       </header>
 
-      <div className="analysis-content flex-1 flex flex-col md:flex-row p-6 gap-6 overflow-hidden justify-center items-center">
-       {bestMove && <div className="text-left text-white text-sm mb-2 ml-6 mt-8">Engine Suggestion: {bestMove}</div>}
-        <div
-          className={`md:flex md:flex-col mr-6 ${
-            boardOrientation === 'white' ? 'items-start' : 'items-end'
-          } mobile-scale`}
-        >
+      <div className="analysis-content flex flex-1 items-center justify-center gap-5 overflow-hidden p-6">
+        <div className="analysis-board-column flex flex-col" style={{ alignItems: boardOrientation === 'white' ? 'flex-start' : 'flex-end' }}>
+          {bestMove ? (
+            <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-teal-400/18 px-3 py-1 text-xs font-semibold text-teal-200">
+              <Sparkle className="h-3.5 w-3.5" />
+              Engine suggestion: {bestMove}
+            </p>
+          ) : null}
+
           <div
-            className={`flex items-center ${
-              boardOrientation === 'black' ? 'justify-start' : 'justify-end'
-            } mb-2`}
+            className={`mb-2 flex items-center gap-2 ${boardOrientation === 'black' ? 'self-start' : 'self-end'}`}
           >
             <img
-              src={
-                boardOrientation === 'black'
-                  ? game?.white?.avatar || '/images/white-cat.jpeg'
-                  : game?.black?.avatar || '/images/black-cat.webp'
-              }
+              src={boardOrientation === 'black' ? game.white.avatar || '/images/white-cat.jpeg' : game.black.avatar || '/images/black-cat.webp'}
               alt="opponent avatar"
-              className="w-12 h-12 rounded-full mr-2 mobile-avatar"
+              className="mobile-avatar h-10 w-10 rounded-full border border-slate-500/50 object-cover"
             />
-            <div className="text-white text-center">
-              <p className="text-sm mobile-username">
-                {boardOrientation === 'black' ? game?.white?.username : game?.black?.username}
+            <div className="text-right text-slate-100">
+              <p className="mobile-username text-xs font-semibold">
+                {boardOrientation === 'black' ? game.white.username : game.black.username}
               </p>
-              <p className="text-xs text-[#AAAAAA] mobile-username">
-                ({boardOrientation === 'black' ? game?.white?.rating : game?.black?.rating})
+              <p className="mobile-username text-[11px] text-slate-400">
+                ({boardOrientation === 'black' ? game.white.rating : game.black.rating})
               </p>
             </div>
           </div>
-          <div className="flex gap-4">
+
+          <div className="flex gap-3">
             <EvaluationBar evaluation={evaluation} boardWidth={boardWidth} />
-            <div className="relative chessboard-wrapper">
+            <div className="chessboard-wrapper rounded-xl border border-slate-600/40 bg-slate-950/40 p-2 shadow-2xl">
               <ChessBoardDisplay
                 fen={fen}
                 width={boardWidth}
@@ -196,32 +181,25 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
               />
             </div>
           </div>
-          <div
-            className={`flex items-center ${
-              boardOrientation === 'black' ? 'justify-start' : 'justify-end'
-            } mt-2`}
-          >
+
+          <div className={`mt-2 flex items-center gap-2 ${boardOrientation === 'black' ? 'self-start' : 'self-end'}`}>
             <img
-              src={
-                boardOrientation === 'black'
-                  ? game?.black?.avatar || '/images/black-cat.webp'
-                  : game?.white?.avatar || '/images/white-cat.jpeg'
-              }
-              alt="user avatar"
-              className="w-12 h-12 rounded-full mr-2 mobile-avatar"
+              src={boardOrientation === 'black' ? game.black.avatar || '/images/black-cat.webp' : game.white.avatar || '/images/white-cat.jpeg'}
+              alt="player avatar"
+              className="mobile-avatar h-10 w-10 rounded-full border border-slate-500/50 object-cover"
             />
-            <div className="text-white text-center">
-              <p className="text-sm mobile-username">
-                {boardOrientation === 'black' ? game?.black?.username : game?.white?.username}
+            <div className="text-right text-slate-100">
+              <p className="mobile-username text-xs font-semibold">
+                {boardOrientation === 'black' ? game.black.username : game.white.username}
               </p>
-              <p className="text-xs text-[#AAAAAA] mobile-username">
-                ({boardOrientation === 'black' ? game?.black?.rating : game?.white?.rating})
+              <p className="mobile-username text-[11px] text-slate-400">
+                ({boardOrientation === 'black' ? game.black.rating : game.white.rating})
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 ml-6 mobile-scale">
+        <div className="analysis-side-column flex w-full max-w-[460px] flex-col gap-4">
           <MoveList
             moves={moves}
             currentMove={chessboardCurrentMove}
@@ -230,6 +208,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
             setBoardOrientation={setBoardOrientation}
             moveHistoryLength={moveHistoryLength}
           />
+
           <LlmFeedback
             game={game}
             currentMove={chessboardCurrentMove}
@@ -237,24 +216,18 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
             pieceColor={playerColor}
             onFeedbackUpdate={setFeedback}
           />
+
           <ExportGame game={game} feedback={feedback} />
         </div>
 
-        {showInfo && (
-          <div className="w-80 ml-6 bg-[#312e2b] p-4 rounded-lg shadow-xl">
-            <GameInfo
-              game={game}
-              onClose={() => setShowInfo(false)}
-              moveHistory={moveHistory}
-            />
+        {showInfo ? (
+          <div className="analysis-info-panel w-80">
+            <GameInfo game={game} onClose={() => setShowInfo(false)} moveHistory={moveHistory} />
           </div>
-        )}
+        ) : null}
       </div>
 
-      <KeyboardShortcutsModal 
-        isOpen={showKeyboardShortcuts}
-        onClose={() => setShowKeyboardShortcuts(false)}
-      />
+      <KeyboardShortcutsModal isOpen={showKeyboardShortcuts} onClose={() => setShowKeyboardShortcuts(false)} />
     </div>
   );
 };

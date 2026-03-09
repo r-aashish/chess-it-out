@@ -7,22 +7,18 @@ interface ExportGameProps {
   feedback?: string[];
 }
 
-/**
- * ExportGame component allows users to export game data in various formats.
- * Supports exporting PGN and game analysis.
- */
 export const ExportGame: React.FC<ExportGameProps> = ({ game, feedback = [] }) => {
   const [copied, setCopied] = useState(false);
 
   const downloadPGN = () => {
     const blob = new Blob([game.pgn], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${game.white.username}_vs_${game.black.username}_${new Date(game.end_time * 1000).toISOString().split('T')[0]}.pgn`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `${game.white.username}_vs_${game.black.username}_${new Date(game.end_time * 1000).toISOString().split('T')[0]}.pgn`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
   };
 
@@ -32,22 +28,22 @@ export const ExportGame: React.FC<ExportGameProps> = ({ game, feedback = [] }) =
     analysisText += `Time Control: ${game.time_class}\n`;
     analysisText += `Result: ${game.white.result} (White) - ${game.black.result} (Black)\n\n`;
     analysisText += `PGN:\n${game.pgn}\n\n`;
-    
+
     if (feedback.length > 0) {
-      analysisText += `AI Analysis:\n`;
-      feedback.forEach((fb, index) => {
-        analysisText += `Move ${index + 1}: ${fb}\n\n`;
+      analysisText += 'AI Analysis:\n';
+      feedback.forEach((entry, index) => {
+        analysisText += `Move ${index + 1}: ${entry}\n\n`;
       });
     }
 
     const blob = new Blob([analysisText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `analysis_${game.white.username}_vs_${game.black.username}_${new Date(game.end_time * 1000).toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `analysis_${game.white.username}_vs_${game.black.username}_${new Date(game.end_time * 1000).toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
   };
 
@@ -56,55 +52,47 @@ export const ExportGame: React.FC<ExportGameProps> = ({ game, feedback = [] }) =
       await navigator.clipboard.writeText(game.pgn);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy PGN:', err);
+    } catch (error) {
+      console.error('Failed to copy PGN:', error);
     }
   };
 
   return (
-    <div className="bg-[#1b1b1b] rounded-sm p-4 space-y-3">
-      <h3 className="text-white font-semibold text-lg mb-3">Export Game</h3>
-      
+    <section className="analysis-card w-full max-w-[460px] p-3">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Export</p>
+        <p className="text-xs text-slate-400">PGN + notes</p>
+      </div>
+
       <div className="space-y-2">
         <button
           onClick={downloadPGN}
-          className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-[#2b2b2b] hover:bg-[#3a3a3a] text-gray-300 hover:text-white rounded-sm transition-colors"
+          className="analysis-control-btn flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold"
+          type="button"
         >
-          <Download className="w-4 h-4" />
-          <span>Download PGN</span>
+          <Download className="h-4 w-4" />
+          Download PGN
         </button>
 
         <button
           onClick={copyPGN}
-          className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-[#2b2b2b] hover:bg-[#3a3a3a] text-gray-300 hover:text-white rounded-sm transition-colors"
+          className="analysis-control-btn flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold"
+          type="button"
         >
-          {copied ? (
-            <>
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span className="text-green-500">Copied!</span>
-            </>
-          ) : (
-            <>
-              <FileText className="w-4 h-4" />
-              <span>Copy PGN</span>
-            </>
-          )}
+          {copied ? <CheckCircle className="h-4 w-4 text-emerald-300" /> : <FileText className="h-4 w-4" />}
+          {copied ? 'Copied' : 'Copy PGN'}
         </button>
 
-        {feedback.length > 0 && (
+        {feedback.length > 0 ? (
           <button
             onClick={downloadAnalysis}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-sm transition-colors"
+            className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-95"
+            type="button"
           >
-            <Download className="w-4 h-4" />
-            <span>Download Analysis</span>
+            Download Analysis
           </button>
-        )}
+        ) : null}
       </div>
-      
-      <p className="text-xs text-gray-400 mt-2">
-        Export game data for offline analysis or sharing
-      </p>
-    </div>
+    </section>
   );
 };
