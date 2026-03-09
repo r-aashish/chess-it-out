@@ -90,6 +90,24 @@ const customPieces = () => {
   };
 };
 
+const getKingSquare = (chess: Chess, color: 'w' | 'b'): Square | null => {
+  const board = chess.board();
+  const files = 'abcdefgh';
+
+  for (let rankIndex = 0; rankIndex < board.length; rankIndex++) {
+    for (let fileIndex = 0; fileIndex < board[rankIndex].length; fileIndex++) {
+      const piece = board[rankIndex][fileIndex];
+      if (piece?.type === 'k' && piece.color === color) {
+        const file = files[fileIndex];
+        const rank = 8 - rankIndex;
+        return `${file}${rank}` as Square;
+      }
+    }
+  }
+
+  return null;
+};
+
 /**
  * ChessBoardDisplay component renders a chessboard with specified properties.
  * It uses the react-chessboard library to display the board and customizes
@@ -108,6 +126,10 @@ export const ChessBoardDisplay: React.FC<ChessboardDisplayProps> = ({
   chess,
   lastClickedPiece,
 }) => {
+  const checkmatedKingSquare = isCheckmate
+    ? getKingSquare(chess, chess.turn() === 'w' ? 'w' : 'b')
+    : null;
+
   return (
     <div className="relative" style={{ width: width, height: width }}>
       <Chessboard
@@ -140,14 +162,9 @@ export const ChessBoardDisplay: React.FC<ChessboardDisplayProps> = ({
               boxSizing: 'border-box'
             }
           }), {})),
-          ...(isCheckmate && chess.turn() === 'w' ? {
-            [chess.board().flat().findIndex(p => p?.type === 'k' && p.color === 'w')]: {
-              animation: 'pulse 1s infinite'
-            }
-          } : {}),
-          ...(isCheckmate && chess.turn() === 'b' ? {
-            [chess.board().flat().findIndex(p => p?.type === 'k' && p.color === 'b')]: {
-              animation: 'pulse 1s infinite'
+          ...(checkmatedKingSquare ? {
+            [checkmatedKingSquare]: {
+              animation: 'pulse-checkmate 1s infinite'
             }
           } : {})
         }}

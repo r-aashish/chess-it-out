@@ -58,17 +58,18 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
           // Analysis info
           if (message.includes('info depth')) {
             // Parse score
-            const scoreMatch = message.match(/score cp (?:-?\d+)/);
-            const mateMatch = message.match(/score mate (-?\\d+)/);
+            const scoreMatch = message.match(/score cp (-?\d+)/);
+            const mateMatch = message.match(/score mate (-?\d+)/);
             
-            if (scoreMatch && scoreMatch.length > 0) {
+            if (scoreMatch) {
               // Convert centipawns to pawns
-              const score = parseInt(scoreMatch[0].split(' ')[2]) / 100;
-              //console.log('Evaluation:', score);
-              setEvaluation(score);
+              const score = Number.parseInt(scoreMatch[1], 10);
+              if (!Number.isNaN(score)) {
+                setEvaluation(score / 100);
+              }
             } else if (mateMatch) {
               // Handle mate scores
-              const mateIn = parseInt(mateMatch[1]);
+              const mateIn = Number.parseInt(mateMatch[1], 10);
               setEvaluation(mateIn > 0 ? Infinity : -Infinity);
             }
 

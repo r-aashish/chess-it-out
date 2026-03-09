@@ -3,7 +3,7 @@ import { ChessGame } from '../../types/chess';
 import { X, Clock, Trophy, Calendar } from '../icons';
 import { format } from 'date-fns';
 import { detectOpening, getOpeningDescription } from '../../utils/openings';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Circle, Hash, FlagTriangleLeft, FlagTriangleRight, Swords } from 'lucide-react';
 
 /**
  * GameInfoProps interface defines the props for the GameInfo component.
@@ -52,6 +52,12 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game, onClose, moveHistory }
     return detectOpening(game.pgn);
   }, [game.pgn]);
 
+  const resultSummary = useMemo(() => {
+    if (game.white.result === 'win') return `${game.white.username} won (1-0)`;
+    if (game.black.result === 'win') return `${game.black.username} won (0-1)`;
+    return `Draw (${game.white.result} / ${game.black.result})`;
+  }, [game.white.result, game.white.username, game.black.result, game.black.username]);
+
   // Define game details
   const details = [
     {
@@ -70,79 +76,34 @@ export const GameInfo: React.FC<GameInfoProps> = ({ game, onClose, moveHistory }
       value: () => playedOn,
     },
     {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-4 h-4"
-        >
-          <path fillRule="evenodd" d="..." clipRule="evenodd" />
-        </svg>
-      ),
+      icon: <FlagTriangleLeft className="w-4 h-4" />,
       label: 'White',
-      value: () => game.white?.username || 'Unknown',
+      value: () => `${game.white?.username || 'Unknown'} (${game.white?.rating || '?'})`,
     },
     {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-4 h-4"
-        >
-          <path fillRule="evenodd" d="..." clipRule="evenodd" />
-        </svg>
-      ),
+      icon: <FlagTriangleRight className="w-4 h-4" />,
       label: 'Black',
-      value: () => game.black?.username || 'Unknown',
+      value: () => `${game.black?.username || 'Unknown'} (${game.black?.rating || '?'})`,
     },
     {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-4 h-4"
-        >
-          <path d="..." />
-        </svg>
-      ),
+      icon: <Swords className="w-4 h-4" />,
       label: 'Result',
-      value: () => game.result || 'Unknown',
+      value: () => resultSummary,
     },
     {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-4 h-4"
-        >
-          <path fillRule="evenodd" d="..." clipRule="evenodd" />
-        </svg>
-      ),
+      icon: <Circle className="w-4 h-4" />,
       label: 'Opening',
       value: () => opening ? `${opening.name} (${opening.eco})` : game.opening || 'Unknown',
     },
     {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-4 h-4"
-        >
-          <path d="..." strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ),
+      icon: <Hash className="w-4 h-4" />,
       label: 'Number of Moves',
       value: () => numberOfMoves.toString(),
     },
   ];
 
   return (
-    <div className="absolute inset-y-0 right-0 w-80 border-l border-[#403D39] p-4">
+    <div className="w-full h-full border-l border-[#403D39] p-4">
       <div className="game-info-container bg-[#272522]">
         {/* Header Section */}
         <div className="flex justify-between items-center mb-6">

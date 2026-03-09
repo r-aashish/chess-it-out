@@ -74,9 +74,7 @@ export const EvaluationBar: React.FC<EvaluationBarProps> = ({
     return eval_ >= 0 ? `+${formattedEval}` : `-${formattedEval}`;
   };
 
-  const height = React.useMemo(() => {
-    return normalizeEvaluation(evaluation);
-  }, [evaluation, normalizeEvaluation]);
+  const height = normalizeEvaluation(evaluation);
 
   const textColor = height > 50 ? '#000' : '#fff';
   const textShadow = height > 50

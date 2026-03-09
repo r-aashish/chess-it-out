@@ -5,7 +5,6 @@ import { EvaluationBar } from './EvaluationBar';
 import { MoveList } from './MoveList';
 import { useChessboard } from '../../hooks/useChessboard';
 import { GameInfo } from './GameInfo';
-import { Chess } from 'chess.js';
 import { ChessGame, Move } from '../../types/chess';
 import { X, ChevronLeft, Info } from '../icons';
 import LlmFeedback from './LlmFeedback';
@@ -30,15 +29,19 @@ interface ChessAnalysisProps {
  */
 export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, username }) => {
   const [showInfo, setShowInfo] = useState(false);
-  const [chess] = useState(new Chess());
   const [boardWidth, setBoardWidth] = useState(630);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
   const [feedback, setFeedback] = useState<string[]>([]);
+  const normalizedUsername = username?.toLowerCase();
+  const playerColor: 'white' | 'black' =
+    normalizedUsername && game.black.username.toLowerCase() === normalizedUsername
+      ? 'black'
+      : 'white';
 
-    useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setBoardWidth(window.innerWidth - 40); // Adjust as needed
+        setBoardWidth(Math.max(280, window.innerWidth - 32));
       } else {
         setBoardWidth(630);
       }
@@ -56,10 +59,13 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
   const isCheckmate = false;
 
   const handleMovesChange = useCallback((newMoves: Move[]) => {
-    console.log('Moves updated:', newMoves);
+    if (!newMoves.length) {
+      setFeedback([]);
+    }
   }, []);
 
   const {
+    chess,
     fen,
     validMoves,
     lastMove,
@@ -75,6 +81,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
   } = useChessboard({
     initialFen: game.fen,
     pgn: game.pgn,
+    initialOrientation: playerColor,
     onMovesChange: handleMovesChange,
   });
 
@@ -208,7 +215,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
                 {boardOrientation === 'black' ? game?.black?.username : game?.white?.username}
               </p>
               <p className="text-xs text-[#AAAAAA] mobile-username">
-                ({boardOrientation === 'black' ? game?.white?.rating : game?.black?.rating})
+                ({boardOrientation === 'black' ? game?.black?.rating : game?.white?.rating})
               </p>
             </div>
           </div>
@@ -227,7 +234,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
             game={game}
             currentMove={chessboardCurrentMove}
             username={username}
-            pieceColor={boardOrientation === 'white' ? 'white' : 'black'}
+            pieceColor={playerColor}
             onFeedbackUpdate={setFeedback}
           />
           <ExportGame game={game} feedback={feedback} />

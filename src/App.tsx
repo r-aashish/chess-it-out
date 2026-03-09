@@ -1,4 +1,8 @@
 import Logo from '../images/Logo.png';
+import LinkedInLogo from '../images/Linkedin.png';
+import EmailLogo from '../images/Email.png';
+import GithubLogo from '../images/Github.png';
+import ResumeLogo from '../images/Resume.png';
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getPlayerProfile, getPlayerStats, getPlayerGames } from "./services/chessApi";
@@ -12,6 +16,9 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { PlayerProfile, ChessStats, ChessGame } from "./types/chess";
 import { ThemeToggle } from "./components/ThemeToggle";
 
+const RECENT_SEARCHES_KEY = 'chess-it-out-recent-searches';
+const MAX_RECENT_SEARCHES = 6;
+
 /**
  * App component is the main component of the application.
  * It handles the overall layout, routing, and data fetching.
@@ -24,6 +31,18 @@ const App = () => {
   const [selectedGame, setSelectedGame] = useState<ChessGame | null>(null);
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const saved = window.localStorage.getItem(RECENT_SEARCHES_KEY);
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter((name) => typeof name === 'string').slice(0, MAX_RECENT_SEARCHES);
+    } catch {
+      return [];
+    }
+  });
 
   /**
    * handleSearch function handles the search for a Chess.com username.
@@ -31,6 +50,9 @@ const App = () => {
    * @param username - The username to search for.
    */
   const handleSearch = async (username: string) => {
+    const normalizedUsername = username.trim().toLowerCase();
+    if (!normalizedUsername) return;
+
     setIsLoading(true);
     setError("");
     setProfile(null);
@@ -40,16 +62,30 @@ const App = () => {
 
     try {
       const [profileData, statsData, gamesData] = await Promise.all([
-        getPlayerProfile(username),
-        getPlayerStats(username),
-        getPlayerGames(username),
+        getPlayerProfile(normalizedUsername),
+        getPlayerStats(normalizedUsername),
+        getPlayerGames(normalizedUsername),
       ]);
 
       setProfile(profileData);
       setStats(statsData);
       setGames(gamesData);
-    } catch {
-      setError("Could not find player. Please check the username and try again.");
+      setRecentSearches((prev) => {
+        const deduped = [
+          profileData.username,
+          ...prev.filter((name) => name.toLowerCase() !== profileData.username.toLowerCase()),
+        ].slice(0, MAX_RECENT_SEARCHES);
+
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(deduped));
+        }
+
+        return deduped;
+      });
+    } catch (searchError) {
+      setError(searchError instanceof Error
+        ? searchError.message
+        : "Could not find player. Please check the username and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -97,11 +133,38 @@ const App = () => {
                       <div className="w-full max-w-3xl mt-12">
                         <SearchForm onSearch={handleSearch} isLoading={isLoading} />
                         {error && <ErrorMessage message={error} />}
+                        {recentSearches.length > 0 && (
+                          <div className="mt-4 space-y-2 text-center">
+                            <div className="flex flex-wrap justify-center gap-2">
+                              {recentSearches.map((name) => (
+                                <button
+                                  key={name}
+                                  onClick={() => handleSearch(name)}
+                                  className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg border border-white/20 text-xs transition-colors"
+                                >
+                                  {name}
+                                </button>
+                              ))}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setRecentSearches([]);
+                                if (typeof window !== 'undefined') {
+                                  window.localStorage.removeItem(RECENT_SEARCHES_KEY);
+                                }
+                              }}
+                              className="text-xs text-gray-300 hover:text-white underline underline-offset-2"
+                            >
+                              Clear recent searches
+                            </button>
+                          </div>
+                        )}
                       </div>
 
                       {profile && stats && (
                         <div className="space-y-8 animate-slideUp w-full mt-6">
-                          <ProfileCard profile={profile} />
+                          <ProfileCard profile={profile} stats={stats} />
                           <StatsCard stats={stats} />
                           <GamesList
                             games={games}
@@ -146,10 +209,10 @@ const App = () => {
                       </p>
                       <div className="flex justify-center space-x-6 animate-fadeIn">
                         {[
-                          { href: "https://www.linkedin.com/in/aashishreddy", img: "/images/linkedin.png", alt: "LinkedIn" },
-                          { href: "mailto:aashishreddy53@gmail.com", img: "/images/email.png", alt: "Email" },
-                          { href: "https://github.com/r-aashish", img: "/images/github.png", alt: "GitHub" },
-                          { href: "https://aashish-resume.tiiny.site", img: "/images/resume.png", alt: "Resume" }
+                          { href: "https://www.linkedin.com/in/aashishreddy", img: LinkedInLogo, alt: "LinkedIn" },
+                          { href: "mailto:aashishreddy53@gmail.com", img: EmailLogo, alt: "Email" },
+                          { href: "https://github.com/r-aashish", img: GithubLogo, alt: "GitHub" },
+                          { href: "https://aashish-resume.tiiny.site", img: ResumeLogo, alt: "Resume" }
                         ].map((link) => (
                           <a
                             key={link.alt}

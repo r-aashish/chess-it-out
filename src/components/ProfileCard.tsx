@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { PlayerProfile, ChessStats } from "../types/chess";
-import { Chessboard } from 'react-chessboard';
 import {
   Clock,
   User,
@@ -11,7 +10,6 @@ import {
   Info
 } from "./icons";
 import { formatDate, calculateWinLossRatio } from "../utils/date";
-import { getPlayerStats } from "../services/chessApi";
 
 /**
  * ProfileCardProps interface defines the props for the ProfileCard component.
@@ -19,57 +17,23 @@ import { getPlayerStats } from "../services/chessApi";
  */
 interface ProfileCardProps {
   profile: PlayerProfile;
-  username?: string; // Optional username prop
+  stats?: ChessStats | null;
 }
 
 /**
  * ProfileCard component displays a player's profile information, including their avatar,
  * username, name, location, followers, highest rating, join date, and win/loss ratio.
  */
-export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) => {
-  const [stats, setStats] = useState<ChessStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const orientation = username && profile.username.toLowerCase() === username.toLowerCase() ? "white" : "black";
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setLoading(true);
-        const fetchedStats = await getPlayerStats(profile.username);
-        setStats(fetchedStats);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load stats");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, [profile.username]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-pulse text-gray-500 dark:text-gray-400">
-          Loading player stats...
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-xl text-red-600 dark:text-red-300 text-center">
-        Error: {error}
-      </div>
-    );
-  }
-
+export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, stats }) => {
   const rapidWins = stats?.chess_rapid?.record?.win || 0;
   const rapidLosses = stats?.chess_rapid?.record?.loss || 0;
   const rapidWinLossRatio = calculateWinLossRatio(rapidWins, rapidLosses);
-  const highestRating = stats?.chess_rapid?.best?.rating || 0;
+  const highestRating = Math.max(
+    stats?.chess_rapid?.best?.rating || 0,
+    stats?.chess_blitz?.best?.rating || 0,
+    stats?.chess_bullet?.best?.rating || 0,
+  );
+  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.username)}&background=1f2937&color=ffffff&size=128`;
 
   return (
     
@@ -80,34 +44,16 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, username }) =
       </h2>
       <div className="flex items-start space-x-6 mb-6 flex-col sm:flex-row">
         <div className="relative">
-          {username && (
-            <div className="w-24 h-24 flex flex-col items-center">
-              <Chessboard
-                position="start"
-                boardWidth={96}
-                areArrowsAllowed={false}
-                customBoardStyle={{
-                  borderRadius: '8px',
-                }}
-                boardOrientation={orientation}
-              /> {/* boardOrientation is dynamically set based on username prop */}
-              <div className="w-full text-center text-xs text-gray-500 dark:text-gray-400">
-                {profile.username}
-              </div>
-            </div>
-          )}
-          {!username && (
-            <div className="relative">
-              <img
-                src={profile.avatar}
-                alt={`${profile.username}'s avatar`}
-                className="w-24 h-24 rounded-xl border-4 border-white dark:border-gray-800 shadow-xl ring-4 ring-blue-100 dark:ring-blue-800/20"
-                onError={(e) => {
-                  e.currentTarget.src = '/default-avatar.svg';
-                }}
-              />
-            </div>
-          )}
+          <div className="relative">
+            <img
+              src={profile.avatar || fallbackAvatar}
+              alt={`${profile.username}'s avatar`}
+              className="w-24 h-24 rounded-xl border-4 border-white dark:border-gray-800 shadow-xl ring-4 ring-blue-100 dark:ring-blue-800/20"
+              onError={(e) => {
+                e.currentTarget.src = fallbackAvatar;
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex-1">

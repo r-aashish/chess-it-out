@@ -10,6 +10,7 @@ import { Move } from '../types/chess';
 interface UseChessboardProps {
   initialFen?: string;
   pgn?: string;
+  initialOrientation?: 'white' | 'black';
   onMovesChange: (moves: Move[]) => void;
   onCurrentMoveChange?: (currentMove: number) => void;
 }
@@ -40,7 +41,7 @@ interface UseChessboardReturn {
  * useChessboard hook manages the state and logic for a chessboard component.
  * It handles loading PGN, move validation, square clicks, and move history.
  */
-export const useChessboard = ({ initialFen, pgn, onMovesChange, onCurrentMoveChange }: UseChessboardProps): UseChessboardReturn => {
+export const useChessboard = ({ initialFen, pgn, initialOrientation = 'white', onMovesChange, onCurrentMoveChange }: UseChessboardProps): UseChessboardReturn => {
   const [chess] = useState(() => {
     return new Chess();
   });
@@ -51,38 +52,55 @@ export const useChessboard = ({ initialFen, pgn, onMovesChange, onCurrentMoveCha
   const [validMoves, setValidMoves] = useState<Square[]>([]);
   const [lastMove, setLastMove] = useState<{ from: Square; to: Square } | null>(null);
   const [lastClickedPiece, setLastClickedPiece] = useState<Square | null>(null);
-  const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>(() => {
-    if (initialFen) {
-      const fenParts = initialFen.split(' ');
-      return fenParts[1] === 'b' ? 'white' : 'black';
-    }
-    return 'white';
-  });
+  const [boardOrientation, setBoardOrientation] = useState<'white' | 'black'>(() => initialOrientation);
 
   useEffect(() => {
     if (pgn) {
-      chess.loadPgn(pgn);
-      const history = chess.history();
-      setMoveHistory(history);
+      try {
+        chess.loadPgn(pgn);
+        const history = chess.history();
+        setMoveHistory(history);
 
-      const pairedMoves: Move[] = [];
-      for (let i = 0; i < history.length; i += 2) {
-        pairedMoves.push({
-          moveNumber: Math.floor(i / 2) + 1,
-          white: history[i],
-          black: history[i + 1] || '',
-        });
-      }
-      setMoves(pairedMoves);
-      onMovesChange(pairedMoves);
-      chess.reset();
-      setFen(chess.fen());
-      setCurrentMove(0);
-      if (onCurrentMoveChange) {
-        onCurrentMoveChange(0);
+        const pairedMoves: Move[] = [];
+        for (let i = 0; i < history.length; i += 2) {
+          pairedMoves.push({
+            moveNumber: Math.floor(i / 2) + 1,
+            white: history[i],
+            black: history[i + 1] || '',
+          });
+        }
+        setMoves(pairedMoves);
+        onMovesChange(pairedMoves);
+        chess.reset();
+        setFen(chess.fen());
+        setCurrentMove(0);
+        setValidMoves([]);
+        setLastMove(null);
+        setLastClickedPiece(null);
+        if (onCurrentMoveChange) {
+          onCurrentMoveChange(0);
+        }
+      } catch (error) {
+        console.error('Failed to load PGN:', error);
+        chess.reset();
+        setFen(chess.fen());
+        setCurrentMove(0);
+        setValidMoves([]);
+        setLastMove(null);
+        setLastClickedPiece(null);
+        setMoveHistory([]);
+        setMoves([]);
+        onMovesChange([]);
+        if (onCurrentMoveChange) {
+          onCurrentMoveChange(0);
+        }
       }
     }
   }, [pgn, onMovesChange, onCurrentMoveChange, chess]);
+
+  useEffect(() => {
+    setBoardOrientation(initialOrientation);
+  }, [initialOrientation]);
 
   const handleSquareClick = (square: Square) => {
     const piece = chess.get(square);
@@ -99,10 +117,13 @@ export const useChessboard = ({ initialFen, pgn, onMovesChange, onCurrentMoveCha
 
       if (move) {
         setFen(chess.fen());
-        setCurrentMove(currentMove + 1);
-        if (onCurrentMoveChange) {
-          onCurrentMoveChange(currentMove + 1);
-        }
+        setCurrentMove((previousMove) => {
+          const nextMove = previousMove + 1;
+          if (onCurrentMoveChange) {
+            onCurrentMoveChange(nextMove);
+          }
+          return nextMove;
+        });
         setLastMove({ from: move.from as Square, to: move.to as Square });
       }
 
