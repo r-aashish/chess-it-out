@@ -86,7 +86,7 @@ export const ExportGame: React.FC<ExportGameProps> = ({ game, feedback = [] }) =
         {feedback.length > 0 ? (
           <button
             onClick={downloadAnalysis}
-            className="w-full rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-95"
+            className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-95"
             type="button"
           >
             Download Analysis

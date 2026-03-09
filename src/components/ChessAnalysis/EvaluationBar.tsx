@@ -17,33 +17,23 @@ export const EvaluationBar: React.FC<EvaluationBarProps> = ({
 }) => {
   const normalizeEvaluation = (value: number | null): number => {
     if (value === null) return 50;
-    if (mateIn !== null) return value > 0 ? 100 : 0;
+    if (mateIn !== null) return mateIn > 0 ? 98 : 2;
+    if (!Number.isFinite(value)) return value > 0 ? 98 : 2;
 
-    const scale = (x: number): number => {
-      const base = 50;
-      const absX = Math.abs(x);
-
-      if (isEndgame) {
-        if (absX <= 1) return base + x * 25;
-        if (absX <= 2) return base + (x > 0 ? 1 : -1) * (25 + 15 * (absX - 1));
-        return base + (x > 0 ? 1 : -1) * (40 + 8 * Math.log2(absX));
-      }
-
-      if (absX <= 1.5) return base + x * 15;
-      if (absX <= 3) return base + (x > 0 ? 1 : -1) * (22.5 + 7.5 * (absX - 1.5));
-      if (absX <= 6) return base + (x > 0 ? 1 : -1) * (33.75 + 6 * Math.log2(absX));
-      return base + (x > 0 ? 1 : -1) * (42 + 6 * Math.log2(absX / 6));
-    };
-
-    return Math.max(2, Math.min(98, scale(value)));
+    // Logistic-style compression keeps huge eval swings readable.
+    const clamped = Math.max(-10, Math.min(10, value));
+    const tension = isEndgame ? 1.85 : 2.35;
+    const normalized = 50 + 46 * Math.tanh(clamped / tension);
+    return Math.max(2, Math.min(98, normalized));
   };
 
   const formatEvaluation = (value: number | null): string => {
     if (value === null) return '?';
     if (mateIn !== null) return `M${Math.abs(mateIn)}`;
+    if (!Number.isFinite(value)) return value > 0 ? '+∞' : '-∞';
 
     const absEval = Math.abs(value);
-    let formattedEval = absEval < 0.1 ? '0.0' : absEval.toFixed(isEndgame && absEval < 1 ? 2 : 1);
+    let formattedEval = absEval < 0.05 ? '0.0' : absEval.toFixed(isEndgame && absEval < 1 ? 2 : 1);
     formattedEval = formattedEval.replace(/\.?0+$/, '');
     return value >= 0 ? `+${formattedEval}` : `-${formattedEval}`;
   };

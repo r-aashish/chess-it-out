@@ -66,13 +66,13 @@ export const MoveList: React.FC<MoveListProps> = ({
             <div key={`${move.moveNumber}-${move.white}-${move.black}`} className="whitespace-nowrap">
               <span className="mr-1 text-slate-500">{move.moveNumber}.</span>
 
-              <button
-                type="button"
-                className={`rounded px-1.5 py-0.5 ${
-                  currentMove === index * 2 + 1 ? 'bg-teal-400/20 text-teal-200' : 'text-slate-200 hover:bg-slate-700/40'
-                }`}
-                onClick={() => handleGoToMove(index * 2 + 1)}
-              >
+                <button
+                  type="button"
+                  className={`rounded px-1.5 py-0.5 ${
+                    currentMove === index * 2 + 1 ? 'bg-orange-400/20 text-orange-200' : 'text-slate-200 hover:bg-slate-700/40'
+                  }`}
+                  onClick={() => handleGoToMove(index * 2 + 1)}
+                >
                 {move.white}
               </button>
 
@@ -80,7 +80,7 @@ export const MoveList: React.FC<MoveListProps> = ({
                 <button
                   type="button"
                   className={`ml-1 rounded px-1.5 py-0.5 ${
-                    currentMove === index * 2 + 2 ? 'bg-teal-400/20 text-teal-200' : 'text-slate-200 hover:bg-slate-700/40'
+                    currentMove === index * 2 + 2 ? 'bg-orange-400/20 text-orange-200' : 'text-slate-200 hover:bg-slate-700/40'
                   }`}
                   onClick={() => handleGoToMove(index * 2 + 2)}
                 >

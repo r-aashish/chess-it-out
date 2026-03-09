@@ -101,7 +101,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
     showKeyboardShortcuts,
   ]);
 
-  const { evaluation, bestMove, bestMoveArrow } = useChessEngine(fen);
+  const { evaluation, bestMove, bestMoveArrow, mateIn } = useChessEngine(fen);
 
   return (
     <div className="analysis-shell fixed inset-0 z-50 flex h-screen flex-col overflow-hidden">
@@ -139,7 +139,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
       <div className="analysis-content flex flex-1 items-center justify-center gap-5 overflow-hidden p-6">
         <div className="analysis-board-column flex flex-col" style={{ alignItems: boardOrientation === 'white' ? 'flex-start' : 'flex-end' }}>
           {bestMove ? (
-            <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-teal-400/18 px-3 py-1 text-xs font-semibold text-teal-200">
+            <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-orange-400/18 px-3 py-1 text-xs font-semibold text-orange-200">
               <Sparkle className="h-3.5 w-3.5" />
               Engine suggestion: {bestMove}
             </p>
@@ -164,7 +164,7 @@ export const ChessAnalysis: React.FC<ChessAnalysisProps> = ({ game, onClose, use
           </div>
 
           <div className="flex gap-3">
-            <EvaluationBar evaluation={evaluation} boardWidth={boardWidth} />
+            <EvaluationBar evaluation={evaluation} boardWidth={boardWidth} mateIn={mateIn} />
             <div className="chessboard-wrapper rounded-xl border border-slate-600/40 bg-slate-950/40 p-2 shadow-2xl">
               <ChessBoardDisplay
                 fen={fen}

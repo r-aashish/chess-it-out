@@ -10,6 +10,7 @@ interface EngineAnalysis {
   bestMove: string;        // Best move found by the engine
   pv: string;             // Principal variation
   bestMoveArrow: [Square, Square][];
+  mateIn: number | null;
 }
 
 /**
@@ -28,6 +29,7 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
   const [isEngineReady, setIsEngineReady] = useState(false);
   const engineRef = useRef<Worker | null>(null);
   const [pv, setPv] = useState<string>('');
+  const [mateIn, setMateIn] = useState<number | null>(null);
 
   // Initialize engine
   useEffect(() => {
@@ -65,12 +67,16 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
               // Convert centipawns to pawns
               const score = Number.parseInt(scoreMatch[1], 10);
               if (!Number.isNaN(score)) {
+                setMateIn(null);
                 setEvaluation(score / 100);
               }
             } else if (mateMatch) {
               // Handle mate scores
-              const mateIn = Number.parseInt(mateMatch[1], 10);
-              setEvaluation(mateIn > 0 ? Infinity : -Infinity);
+              const mateMoves = Number.parseInt(mateMatch[1], 10);
+              if (!Number.isNaN(mateMoves)) {
+                setMateIn(mateMoves);
+                setEvaluation(mateMoves > 0 ? 12 : -12);
+              }
             }
 
             // Parse PV
@@ -112,6 +118,7 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
   const analyzePosition = useCallback((position: string) => {
     if (!engineRef.current || !isEngineReady) return;
 
+    setMateIn(null);
     engineRef.current.postMessage('stop');
     engineRef.current.postMessage(`position fen ${position}`);
     engineRef.current.postMessage('go movetime 500 depth 15');
@@ -146,6 +153,7 @@ export const useChessEngine = (fen: string): EngineAnalysis => {
     evaluation,
     bestMove,
     pv,
-    bestMoveArrow
+    bestMoveArrow,
+    mateIn
   };
 };

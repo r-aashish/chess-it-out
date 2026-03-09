@@ -109,81 +109,102 @@ const App = () => {
                         <img src={Logo} alt="ChessItOut" className="h-11 w-auto" />
                         <div>
                           <p className="ui-heading text-base font-bold md:text-lg">ChessItOut</p>
-                          <p className="ui-muted text-xs md:text-sm">Modern game review workspace</p>
+                          <p className="ui-muted text-xs md:text-sm">A post-game detective board for online chess</p>
                         </div>
                       </div>
                       <ThemeToggle />
                     </header>
 
                     <section className="ui-panel relative overflow-hidden rounded-[32px] p-6 md:p-10">
-                      <div className="absolute -right-8 -top-8 h-44 w-44 rounded-full bg-teal-400/20 blur-3xl" />
-                      <div className="absolute -bottom-12 left-1/3 h-52 w-52 rounded-full bg-amber-300/20 blur-3xl" />
+                      <div className="absolute -right-8 -top-8 h-44 w-44 rounded-full bg-amber-500/20 blur-3xl" />
+                      <div className="absolute -bottom-10 left-1/2 h-56 w-56 rounded-full bg-sky-400/15 blur-3xl" />
 
-                      <div className="relative space-y-6">
-                        <div className="space-y-3">
-                          <p className="inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
-                            <Sparkles className="h-3.5 w-3.5" />
-                            Chess Coach Companion
-                          </p>
-                          <h1 className="ui-heading max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl">
-                            Explore any Chess.com profile with crisp stats, smart filters, and move-by-move analysis.
-                          </h1>
-                          <p className="ui-muted max-w-2xl text-sm md:text-base">
-                            Pull recent games instantly, spot trends, and jump straight into an interactive engine workspace.
-                          </p>
-                        </div>
+                      <div className="relative grid gap-7 lg:grid-cols-[1.45fr_0.9fr]">
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <p className="inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
+                              <Sparkles className="h-3.5 w-3.5" />
+                              Read the clues in your games
+                            </p>
+                            <h1 className="ui-heading max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl">
+                              Every game leaves fingerprints.
+                              <br />
+                              This board shows where the plan cracked.
+                            </h1>
+                            <p className="ui-muted max-w-2xl text-sm md:text-base">
+                              Enter a Chess.com handle, review recent battles, and walk through critical moments with engine-backed context.
+                            </p>
+                          </div>
 
-                        <div className="max-w-3xl">
-                          <SearchForm onSearch={handleSearch} isLoading={isLoading} />
-                          {error ? <ErrorMessage message={error} /> : null}
-                        </div>
+                          <div className="max-w-3xl">
+                            <SearchForm onSearch={handleSearch} isLoading={isLoading} />
+                            {error ? <ErrorMessage message={error} /> : null}
+                          </div>
 
-                        <div className="space-y-3">
-                          {recentSearches.length > 0 ? (
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">Recent</span>
-                              {recentSearches.map((name) => (
+                          <div className="space-y-3">
+                            {recentSearches.length > 0 ? (
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">Recent</span>
+                                {recentSearches.map((name) => (
+                                  <button
+                                    key={name}
+                                    onClick={() => handleSearch(name)}
+                                    className="ui-chip px-3 py-1 text-xs font-semibold"
+                                    type="button"
+                                  >
+                                    {name}
+                                  </button>
+                                ))}
                                 <button
-                                  key={name}
-                                  onClick={() => handleSearch(name)}
-                                  className="ui-chip px-3 py-1 text-xs font-semibold"
                                   type="button"
+                                  onClick={() => {
+                                    setRecentSearches([]);
+                                    if (typeof window !== 'undefined') {
+                                      window.localStorage.removeItem(RECENT_SEARCHES_KEY);
+                                    }
+                                  }}
+                                  className="ui-link text-xs font-semibold"
                                 >
-                                  {name}
+                                  Clear
                                 </button>
-                              ))}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setRecentSearches([]);
-                                  if (typeof window !== 'undefined') {
-                                    window.localStorage.removeItem(RECENT_SEARCHES_KEY);
-                                  }
-                                }}
-                                className="ui-link text-xs font-semibold"
-                              >
-                                Clear
-                              </button>
-                            </div>
-                          ) : null}
+                              </div>
+                            ) : null}
 
-                          {!profile && !error && !isLoading ? (
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">Try</span>
-                              {featuredAccounts.map((name) => (
-                                <button
-                                  key={name}
-                                  onClick={() => handleSearch(name)}
-                                  className="ui-chip px-3 py-1 text-xs font-semibold"
-                                  type="button"
-                                >
-                                  {name}
-                                </button>
-                              ))}
-                            </div>
-                          ) : null}
+                            {!profile && !error && !isLoading ? (
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">Try</span>
+                                {featuredAccounts.map((name) => (
+                                  <button
+                                    key={name}
+                                    onClick={() => handleSearch(name)}
+                                    className="ui-chip px-3 py-1 text-xs font-semibold"
+                                    type="button"
+                                  >
+                                    {name}
+                                  </button>
+                                ))}
+                              </div>
+                            ) : null}
+                          </div>
                         </div>
+
+                        <aside className="ui-panel-subtle flex flex-col justify-between rounded-3xl p-5">
+                          <div className="space-y-3">
+                            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">What you get</p>
+                            <ul className="space-y-2 text-sm leading-relaxed text-[var(--text)]">
+                              <li>Game-by-game trend scan.</li>
+                              <li>Fast opponent and time-control filters.</li>
+                              <li>Interactive board with engine guidance.</li>
+                            </ul>
+                          </div>
+
+                          <div className="rounded-2xl bg-[var(--accent-soft)] p-3">
+                            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">Workflow</p>
+                            <p className="mt-1 text-sm text-[var(--text)]">Search profile → pick game → inspect moves → export PGN + notes.</p>
+                          </div>
+                        </aside>
                       </div>
+
                     </section>
 
                     {profile && stats ? (
@@ -192,7 +213,7 @@ const App = () => {
                           <p className="ui-heading text-sm font-semibold md:text-base">Loaded profile: {profile.username}</p>
                           <span className="ui-badge inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold">
                             <Wand2 className="h-3.5 w-3.5" />
-                            Ready for analysis
+                            Ready for move breakdown
                           </span>
                         </div>
 
